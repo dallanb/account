@@ -12,14 +12,12 @@ class Account(db.Model, BaseMixin):
     role = db.Column(db.Enum(RoleEnum), db.ForeignKey('role.name'), nullable=False)
     address_uuid = db.Column(UUIDType(binary=False), db.ForeignKey('address.uuid'), nullable=False)
     phone_uuid = db.Column(UUIDType(binary=False), db.ForeignKey('phone.uuid'), nullable=False)
-    membership_uuid = db.Column(UUIDType(binary=False), db.ForeignKey('membership.uuid'), nullable=False)
 
     # Relationship
     account_status = db.relationship("Status")
     account_role = db.relationship("Role")
-    account_address = db.relationship("Address")
-    account_phone = db.relationship("Phone")
-    account_membership = db.relationship("Membership")
+    account_address = db.relationship("Address", backref=db.backref("account", uselist=False))
+    account_phone = db.relationship("Phone", backref=db.backref("account", uselist=False))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
