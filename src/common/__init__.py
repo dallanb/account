@@ -2,7 +2,7 @@ from .auth import check_user
 from .cache import Cache
 from .cleaner import Cleaner
 from .db import DB
-from .enums import ParticipantStatusEnum, WagerStatusEnum
+from .enums import RoleEnum, StatusEnum
 from .error import *
 from .event import Event
 from .response import ErrorResponse, MessageResponse, DataResponse

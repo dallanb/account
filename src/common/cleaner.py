@@ -1,7 +1,6 @@
 from uuid import UUID
 from sqlalchemy.orm.base import object_mapper
 from sqlalchemy.orm.exc import UnmappedInstanceError
-from iso4217 import Currency
 
 
 class Cleaner:
@@ -106,16 +105,6 @@ class Cleaner:
         if v is None:
             return v
         if not cls.is_int(v, min_count=None, max_count=None):
-            return None
-        return v
-
-    @classmethod
-    def is_currency(cls, v):
-        if v is None:
-            return v
-        try:
-            Currency(v)
-        except ValueError:
             return None
         return v
 
