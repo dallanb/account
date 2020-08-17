@@ -8,7 +8,7 @@ class Phone(db.Model, BaseMixin):
     country_code = db.Column(db.Unicode(8), nullable=False)
     extension = db.Column(db.Unicode(20), nullable=True)
 
-    number = db.orm.composite(
+    number = db.composite(
         PhoneNumber,
         _number,
         country_code

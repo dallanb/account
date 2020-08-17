@@ -2,7 +2,7 @@ import os
 from flask import g
 from flask.cli import FlaskGroup
 from src import app, db, common
-from bin import init_account_status
+from bin import init_account_status, init_account_role
 import src
 
 cli = FlaskGroup(app)
@@ -33,7 +33,8 @@ def clear_cache():
 def initialize_statuses():
     with app.app_context():
         g.src = src
-        init_account_status(status_enums=common.AccountStatusEnum)
+        init_account_status(status_enums=common.StatusEnum)
+        init_account_role(role_enums=common.RoleEnum)
         return
 
 
