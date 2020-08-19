@@ -1,7 +1,8 @@
 import logging
+from http import HTTPStatus
+from sqlalchemy_utils import PhoneNumber
 from .base import Base
 from ..models import Phone as PhoneModel
-from http import HTTPStatus
 
 
 class Phone(Base):
@@ -27,8 +28,18 @@ class Phone(Base):
         phone = self.assign_attr(instance=instance, attr=kwargs)
         return self.save(instance=phone)
 
-    def destroy(self, uuid, ):
+    def destroy(self, uuid):
         phones = self.find(uuid=uuid)
         if not phones.total:
             self.error(code=HTTPStatus.NOT_FOUND)
         return Base.destroy(self, instance=phones.items[0])
+
+    @staticmethod
+    def format(attr):
+        return {
+            'number': PhoneNumber(
+                attr['_number'],
+                attr['country_code']
+            ),
+            'extension': attr['extension']
+        }

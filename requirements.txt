@@ -15,6 +15,7 @@ kafka-python==2.0.1
 marshmallow-sqlalchemy==0.23.0
 marshmallow_enum==1.5.1
 passlib==1.7.2
+phonenumbers==8.12.8
 psycopg2-binary==2.8.3
 pyJWT==1.7.1
 pylint==2.4.4

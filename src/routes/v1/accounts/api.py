@@ -11,6 +11,8 @@ class AccountsAPI(Base):
     def __init__(self):
         Base.__init__(self)
         self.account = Account()
+        self.address = Address()
+        self.phone = Phone()
 
     @marshal_with(DataResponse.marshallable())
     def get(self, uuid):
@@ -33,19 +35,25 @@ class AccountsAPI(Base):
         accounts = self.account.find(uuid=uuid)
         if not accounts.total:
             self.throw_error(http_code=self.code.NOT_FOUND)
-            
+
         account = accounts.items[0]
-        if data['address']:
+
+        address_attr = data.pop('address')
+        if address_attr:
             if account.address:
-                account.address = self.address.apply(instance=account.address, **data['address'])
+                account.address = self.address.apply(instance=account.address, **address_attr)
             else:
-                account.address = self.address.create(**data['address'])
-        if data['phone']:
+                account.address = self.address.create(**address_attr)
+
+        phone_attr = data.pop('phone')
+        if phone_attr:
+            phone = self.phone.format(attr=phone_attr)
             if account.phone:
-                account.phone = self.phone.apply(instance=account.phone, **data['phone'])
+                account.phone = self.phone.apply(instance=account.phone, **phone)
             else:
-                account.phone = self.phone.create(**data['phone'])
-        account = self.account.apply(instance=account, **data['account'])
+                account.phone = self.phone.create(**phone)
+                
+        account = self.account.apply(instance=account, **data)
         return DataResponse(
             data={
                 'accounts': self.dump(

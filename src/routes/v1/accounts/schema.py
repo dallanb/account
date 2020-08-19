@@ -1,5 +1,8 @@
+import logging
 from marshmallow import validate, Schema, post_dump
 from webargs import fields
+from ..addresses.schema import DumpAddressSchema, UpdateAddressSchema
+from ..phones.schema import DumpPhoneSchema, UpdatePhoneSchema
 
 
 class DumpAccountSchema(Schema):
@@ -8,8 +11,8 @@ class DumpAccountSchema(Schema):
     mtime = fields.Integer()
     first_name = fields.String()
     last_name = fields.String()
-    address = fields.Nested('DumpAddressSchema')
-    phone = fields.Nested('DumpPhoneSchema')
+    address = fields.Nested(DumpAddressSchema)
+    phone = fields.Nested(DumpPhoneSchema)
 
     def get_attribute(self, obj, attr, default):
         if attr == 'address':
@@ -31,10 +34,10 @@ class DumpAccountSchema(Schema):
 
 
 class UpdateAccountSchema(Schema):
-    first_name = fields.Str(required=False, missing=None, data_key='account.first_name')
-    last_name = fields.Str(required=False, missing=None, data_key='account.last_name')
-    address = fields.Nested('UpdateAddressSchema', data_key='address')
-    phone = fields.Nested('UpdatePhoneSchema', data_key='phone')
+    first_name = fields.Str(required=False, missing=None)
+    last_name = fields.Str(required=False, missing=None)
+    address = fields.Nested(UpdateAddressSchema, missing=None, attribute='address', data_key='address')
+    phone = fields.Nested(UpdatePhoneSchema, missing=None, attribute='phone', data_key='phone')
 
 
 class FetchAllAccountSchema(Schema):

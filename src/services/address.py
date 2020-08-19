@@ -18,17 +18,17 @@ class Address(Base):
         return self.save(instance=address)
 
     def update(self, uuid, **kwargs):
-        addresss = self.find(uuid=uuid)
-        if not addresss.total:
+        addresses = self.find(uuid=uuid)
+        if not addresses.total:
             self.error(code=HTTPStatus.NOT_FOUND)
-        return self.apply(instance=addresss.items[0], **kwargs)
+        return self.apply(instance=addresses.items[0], **kwargs)
 
     def apply(self, instance, **kwargs):
         address = self.assign_attr(instance=instance, attr=kwargs)
         return self.save(instance=address)
 
     def destroy(self, uuid, ):
-        addresss = self.find(uuid=uuid)
-        if not addresss.total:
+        addresses = self.find(uuid=uuid)
+        if not addresses.total:
             self.error(code=HTTPStatus.NOT_FOUND)
-        return Base.destroy(self, instance=addresss.items[0])
+        return Base.destroy(self, instance=addresses.items[0])

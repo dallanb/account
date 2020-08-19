@@ -2,6 +2,9 @@ from .. import producer
 
 
 class Event:
+    def __init__(self):
+        pass
+
     @classmethod
     def generate_endpoint(cls, topic, value):
         return f"/{topic}/{str(value)}"

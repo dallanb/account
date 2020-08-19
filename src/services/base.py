@@ -1,5 +1,5 @@
 import logging
-from ..common import Cache, DB, Event
+from ..common import Cache, DB, Event, Mail
 from ..common.error import ManualException
 
 
@@ -8,6 +8,7 @@ class Base:
         self.db = DB()
         self.cache = Cache()
         self.event = Event()
+        self.mail = Mail()
         self.logger = logging.getLogger(__name__)
 
     # @cache.memoize(timeout=1000)

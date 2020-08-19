@@ -2,7 +2,7 @@ from marshmallow import validate, Schema, post_dump
 from webargs import fields
 
 
-class DumpPhoneSchema(Schema):
+class DumpMailSchema(Schema):
     uuid = fields.UUID()
     ctime = fields.Integer()
     mtime = fields.Integer()
@@ -18,12 +18,10 @@ class DumpPhoneSchema(Schema):
         return data
 
 
-class UpdatePhoneSchema(Schema):
-    number = fields.Str(required=True, attribute='_number')
-    country_code = fields.Str(required=True)
-    extension = fields.Str(required=False, missing=None)
+class FetchMailSchema(Schema):
+    type = fields.String()
 
 
-dump_schema = DumpPhoneSchema()
-dump_many_schema = DumpPhoneSchema(many=True)
-update_schema = UpdatePhoneSchema()
+dump_schema = DumpMailSchema()
+dump_many_schema = DumpMailSchema(many=True)
+fetch_schema = FetchMailSchema()

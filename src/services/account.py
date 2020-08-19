@@ -33,6 +33,14 @@ class Account(Base):
 
     def apply(self, instance, **kwargs):
         account = self.assign_attr(instance=instance, attr=kwargs)
+        _ = self.notify(
+            topic='accounts',
+            value=self.event.generate_endpoint(
+                topic='accounts',
+                value=account.uuid
+            ),
+            key='account_updated'
+        )
         return self.save(instance=account)
 
     def destroy(self, uuid, ):
