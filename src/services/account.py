@@ -17,10 +17,7 @@ class Account(Base):
         account = self.init(model=self.account_model, **kwargs)
         _ = self.notify(
             topic='accounts',
-            value=self.event.generate_endpoint(
-                topic='accounts',
-                value=account.uuid
-            ),
+            value={'uuid': str(account.uuid)},
             key='account_created'
         )
         return self.save(instance=account)
@@ -35,10 +32,7 @@ class Account(Base):
         account = self.assign_attr(instance=instance, attr=kwargs)
         _ = self.notify(
             topic='accounts',
-            value=self.event.generate_endpoint(
-                topic='accounts',
-                value=account.uuid
-            ),
+            value={'uuid': str(account.uuid)},
             key='account_updated'
         )
         return self.save(instance=account)
