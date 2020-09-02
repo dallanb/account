@@ -30,7 +30,7 @@ import logging.config
 logging.config.dictConfig(app.config['LOGGING_CONFIG'])
 
 # import libs
-from .lib import *
+from .libs import *
 
 # event
 producer = Producer(host=app.config['KAFKA_HOST'], port=app.config['KAFKA_PORT'])
@@ -51,7 +51,8 @@ from .common import (
     ErrorResponse
 )
 
-if app.config['ENV'] != 'development':
+# move this somewhere else
+if app.config['ENV'] == 'development':
     # error handling
     @app.errorhandler(Exception)
     @marshal_with(ErrorResponse.marshallable())
@@ -65,10 +66,10 @@ if app.config['ENV'] != 'development':
         return ErrorResponse(code=error.code, msg=error.msg), error.code
 
 
-@app.before_first_request
-def handle_first_request():
-    consumer.start()
-    producer.start()
+# @app.before_first_request
+# def handle_first_request():
+#     consumer.start()
+#     producer.start()
 
 
 # before each request

@@ -38,7 +38,7 @@ class DB:
                     # query = query.join(getattr(model, table))
                     options = db.lazyload(getattr(model, table))
                 else:
-                    nested_class = cls._get_class_by_tablename(tables[j - 1])
+                    nested_class = cls.get_class_by_tablename(tables[j - 1])
                     # query = query.join(getattr(nested_class, table))
                     options = options.lazyload(getattr(nested_class, table))
             if i == len(expand) - 1:
@@ -50,7 +50,7 @@ class DB:
                     # query = query.join(getattr(model, table))
                     options = db.joinedload(getattr(model, table))
                 else:
-                    nested_class = cls._get_class_by_tablename(cls._singularize(tables[j - 1]))
+                    nested_class = cls.get_class_by_tablename(cls._singularize(tables[j - 1]))
                     # query = query.join(getattr(nested_class, table))
                     options = options.joinedload(getattr(nested_class, table))
             if i == len(include) - 1:
@@ -73,7 +73,7 @@ class DB:
         return query
 
     @classmethod
-    def _get_class_by_tablename(cls, tablename):
+    def get_class_by_tablename(cls, tablename):
         for c in db.Model._decl_class_registry.values():
             if hasattr(c, '__tablename__') and c.__tablename__ == tablename:
                 return c
@@ -127,7 +127,7 @@ class DB:
             filters.append(('equal', [(getattr(model, k), v)]))
 
         for k, v in nested.items():
-            nested_class = cls._get_class_by_tablename(k)
+            nested_class = cls.get_class_by_tablename(k)
             for nested_k, nested_v in v.items():
                 filters.append(('equal', [(getattr(nested_class, nested_k), nested_v)]))
 
