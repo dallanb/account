@@ -3,7 +3,7 @@ from flask_restful import marshal_with
 from .schema import *
 from ..base import Base
 from ....common.response import DataResponse
-from ....common.auth import check_user
+from ....common.auth import check_user, assign_user
 from ....services import Account, Address, Phone
 
 
@@ -15,22 +15,30 @@ class AccountsAPI(Base):
         self.phone = Phone()
 
     @marshal_with(DataResponse.marshallable())
+    @check_user
+    @assign_user
     def get(self, uuid):
-        accounts = self.account.find(uuid=uuid)
+        data = self.clean(schema=fetch_schema, instance=request.args)
+        accounts = self.account.find(uuid=uuid, **data)
         if not accounts.total:
             self.throw_error(http_code=self.code.NOT_FOUND)
         return DataResponse(
             data={
                 'accounts': self.dump(
                     schema=dump_schema,
-                    instance=accounts.items[0]
+                    instance=accounts.items[0],
+                    params={
+                        'include': data['include'],
+                        'expand': data['expand']
+                    }
                 )
             }
         )
 
     @marshal_with(DataResponse.marshallable())
     @check_user
-    def put(self, uuid):
+    @assign_user
+    def put(self, uuid=None):
         data = self.clean(schema=update_schema, instance=request.get_json())
         accounts = self.account.find(uuid=uuid)
         if not accounts.total:
@@ -52,7 +60,7 @@ class AccountsAPI(Base):
                 account.phone = self.phone.apply(instance=account.phone, **phone)
             else:
                 account.phone = self.phone.create(**phone)
-                
+
         account = self.account.apply(instance=account, **data)
         return DataResponse(
             data={
@@ -70,6 +78,7 @@ class AccountsListAPI(Base):
         self.account = Account()
 
     @marshal_with(DataResponse.marshallable())
+    @check_user
     def get(self):
         data = self.clean(schema=fetch_all_schema, instance=request.args)
         accounts = self.account.find(**data)

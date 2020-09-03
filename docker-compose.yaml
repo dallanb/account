@@ -25,7 +25,7 @@ services:
       - ${HUNCHO_DIR}/services/account/manage.py:/home/app/manage.py
       - ${HUNCHO_DIR}/services/account/setup.py:/home/app/setup.py
     env_file:
-      - ${HUNCHO_DIR}/env/dev/.env.account
+      - ${HUNCHO_DIR}/env/prod/.env.account
     healthcheck:
       test: curl --fail -s account:5000/ping || exit 1
       interval: 60s
@@ -46,7 +46,7 @@ services:
     env_file:
       - ${HUNCHO_DIR}/env/dev/.env.account_cache
     healthcheck:
-      test: ["CMD", "redis-cli","ping"]
+      test: [ "CMD", "redis-cli","ping" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -62,7 +62,7 @@ services:
     env_file:
       - ${HUNCHO_DIR}/env/dev/.env.account_db
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U account"]
+      test: [ "CMD-SHELL", "pg_isready -U account" ]
       interval: 10s
       timeout: 5s
       retries: 20

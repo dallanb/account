@@ -12,7 +12,7 @@ app.config.from_object("src.config.Config")
 # cache
 cache = Cache(app, config=app.config['REDIS_CONFIG'])
 # cors
-CORS(app)
+CORS(app, supports_credentials=True)
 # db
 db = SQLAlchemy(app)
 # migrate
@@ -30,7 +30,7 @@ import logging.config
 logging.config.dictConfig(app.config['LOGGING_CONFIG'])
 
 # import libs
-from .lib import *
+from .libs import *
 
 # event
 producer = Producer(host=app.config['KAFKA_HOST'], port=app.config['KAFKA_PORT'])
@@ -51,7 +51,8 @@ from .common import (
     ErrorResponse
 )
 
-if app.config['ENV'] != 'development':
+# move this somewhere else
+if app.config['ENV'] == 'development':
     # error handling
     @app.errorhandler(Exception)
     @marshal_with(ErrorResponse.marshallable())

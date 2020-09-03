@@ -8,6 +8,6 @@ class StatusEnum(enum.Enum):
 
 
 class RoleEnum(enum.Enum):
-    basic = 1
+    member = 1
     admin = 2
     root = 3

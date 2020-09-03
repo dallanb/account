@@ -21,7 +21,7 @@ class Membership(Base):
     def handle_event(self, key, data):
         if key == 'auth_created':
             # create an account
-            account = Account().create(status='active', role='basic')
+            account = Account().create(status='active', role='member')
             _ = self.create(membership_uuid=data['uuid'], username=data['username'], email=data['email'],
                             account=account)
 

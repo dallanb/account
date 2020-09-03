@@ -1,8 +1,8 @@
-import logging
 from marshmallow import validate, Schema, post_dump
 from webargs import fields
 from ..addresses.schema import DumpAddressSchema, UpdateAddressSchema
 from ..phones.schema import DumpPhoneSchema, UpdatePhoneSchema
+from ..avatars.schema import DumpAvatarSchema
 
 
 class DumpAccountSchema(Schema):
@@ -13,12 +13,16 @@ class DumpAccountSchema(Schema):
     last_name = fields.String()
     address = fields.Nested(DumpAddressSchema)
     phone = fields.Nested(DumpPhoneSchema)
+    avatar = fields.Nested(DumpAvatarSchema)
 
     def get_attribute(self, obj, attr, default):
         if attr == 'address':
             return getattr(obj, attr, default) if any(
                 attr in include for include in self.context.get('include', [])) else None
         if attr == 'phone':
+            return getattr(obj, attr, default) if any(
+                attr in include for include in self.context.get('include', [])) else None
+        if attr == 'avatar':
             return getattr(obj, attr, default) if any(
                 attr in include for include in self.context.get('include', [])) else None
         else:
@@ -30,6 +34,8 @@ class DumpAccountSchema(Schema):
             del data['address']
         if data.get('phone', False) is None:
             del data['phone']
+        if data.get('avatar', False) is None:
+            del data['avatar']
         return data
 
 
@@ -38,6 +44,11 @@ class UpdateAccountSchema(Schema):
     last_name = fields.Str(required=False, missing=None)
     address = fields.Nested(UpdateAddressSchema, missing=None, attribute='address', data_key='address')
     phone = fields.Nested(UpdatePhoneSchema, missing=None, attribute='phone', data_key='phone')
+
+
+class FetchAccountSchema(Schema):
+    include = fields.DelimitedList(fields.String(), required=False, missing=[])
+    expand = fields.DelimitedList(fields.String(), required=False, missing=[])
 
 
 class FetchAllAccountSchema(Schema):
@@ -51,4 +62,5 @@ class FetchAllAccountSchema(Schema):
 dump_schema = DumpAccountSchema()
 dump_many_schema = DumpAccountSchema(many=True)
 update_schema = UpdateAccountSchema()
+fetch_schema = FetchAccountSchema()
 fetch_all_schema = FetchAllAccountSchema()
