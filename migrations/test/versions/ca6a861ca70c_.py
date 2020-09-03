@@ -45,7 +45,7 @@ def upgrade():
     op.create_table('role',
     sa.Column('ctime', sa.BigInteger(), nullable=True),
     sa.Column('mtime', sa.BigInteger(), nullable=True),
-    sa.Column('name', sa.Enum('basic', 'admin', 'root', name='roleenum'), nullable=False),
+    sa.Column('name', sa.Enum('member', 'admin', 'root', name='roleenum'), nullable=False),
     sa.PrimaryKeyConstraint('name'),
     sa.UniqueConstraint('name')
     )
@@ -63,7 +63,7 @@ def upgrade():
     sa.Column('first_name', sa.String(), nullable=True),
     sa.Column('last_name', sa.String(), nullable=True),
     sa.Column('status', sa.Enum('pending', 'active', 'inactive', name='statusenum'), nullable=False),
-    sa.Column('role', sa.Enum('basic', 'admin', 'root', name='roleenum'), nullable=False),
+    sa.Column('role', sa.Enum('member', 'admin', 'root', name='roleenum'), nullable=False),
     sa.Column('address_uuid', sqlalchemy_utils.types.uuid.UUIDType(binary=False), nullable=True),
     sa.Column('phone_uuid', sqlalchemy_utils.types.uuid.UUIDType(binary=False), nullable=True),
     sa.ForeignKeyConstraint(['address_uuid'], ['address.uuid'], ),
