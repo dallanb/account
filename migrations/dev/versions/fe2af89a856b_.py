@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 89325b972756
+Revision ID: fe2af89a856b
 Revises: 
-Create Date: 2020-08-19 23:49:48.778612
+Create Date: 2020-09-03 19:39:49.717424
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlalchemy_utils
 
 
 # revision identifiers, used by Alembic.
-revision = '89325b972756'
+revision = 'fe2af89a856b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -32,6 +32,15 @@ def upgrade():
     sa.PrimaryKeyConstraint('uuid'),
     sa.UniqueConstraint('uuid')
     )
+    op.create_table('avatar',
+    sa.Column('uuid', sqlalchemy_utils.types.uuid.UUIDType(binary=False), nullable=False),
+    sa.Column('ctime', sa.BigInteger(), nullable=True),
+    sa.Column('mtime', sa.BigInteger(), nullable=True),
+    sa.Column('s3_filename', sa.String(), nullable=False),
+    sa.Column('filename', sa.String(), nullable=False),
+    sa.PrimaryKeyConstraint('uuid'),
+    sa.UniqueConstraint('uuid')
+    )
     op.create_table('phone',
     sa.Column('uuid', sqlalchemy_utils.types.uuid.UUIDType(binary=False), nullable=False),
     sa.Column('ctime', sa.BigInteger(), nullable=True),
@@ -45,7 +54,7 @@ def upgrade():
     op.create_table('role',
     sa.Column('ctime', sa.BigInteger(), nullable=True),
     sa.Column('mtime', sa.BigInteger(), nullable=True),
-    sa.Column('name', sa.Enum('basic', 'admin', 'root', name='roleenum'), nullable=False),
+    sa.Column('name', sa.Enum('member', 'admin', 'root', name='roleenum'), nullable=False),
     sa.PrimaryKeyConstraint('name'),
     sa.UniqueConstraint('name')
     )
@@ -63,10 +72,12 @@ def upgrade():
     sa.Column('first_name', sa.String(), nullable=True),
     sa.Column('last_name', sa.String(), nullable=True),
     sa.Column('status', sa.Enum('pending', 'active', 'inactive', name='statusenum'), nullable=False),
-    sa.Column('role', sa.Enum('basic', 'admin', 'root', name='roleenum'), nullable=False),
+    sa.Column('role', sa.Enum('member', 'admin', 'root', name='roleenum'), nullable=False),
     sa.Column('address_uuid', sqlalchemy_utils.types.uuid.UUIDType(binary=False), nullable=True),
     sa.Column('phone_uuid', sqlalchemy_utils.types.uuid.UUIDType(binary=False), nullable=True),
+    sa.Column('avatar_uuid', sqlalchemy_utils.types.uuid.UUIDType(binary=False), nullable=True),
     sa.ForeignKeyConstraint(['address_uuid'], ['address.uuid'], ),
+    sa.ForeignKeyConstraint(['avatar_uuid'], ['avatar.uuid'], ),
     sa.ForeignKeyConstraint(['phone_uuid'], ['phone.uuid'], ),
     sa.ForeignKeyConstraint(['role'], ['role.name'], ),
     sa.ForeignKeyConstraint(['status'], ['status.name'], ),
@@ -97,5 +108,6 @@ def downgrade():
     op.drop_table('status')
     op.drop_table('role')
     op.drop_table('phone')
+    op.drop_table('avatar')
     op.drop_table('address')
     # ### end Alembic commands ###
