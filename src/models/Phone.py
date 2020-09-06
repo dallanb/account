@@ -1,6 +1,7 @@
 from sqlalchemy_utils import PhoneNumber
-from .. import db
+
 from .mixins import BaseMixin
+from .. import db
 
 
 class Phone(db.Model, BaseMixin):
@@ -13,6 +14,9 @@ class Phone(db.Model, BaseMixin):
         _number,
         country_code
     )
+
+    # Relationship
+    account = db.relationship("Account", back_populates="phone", uselist=False, lazy="noload")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

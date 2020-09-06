@@ -17,13 +17,13 @@ class DumpAccountSchema(Schema):
 
     def get_attribute(self, obj, attr, default):
         if attr == 'address':
-            return getattr(obj, attr, default) if any(
+            return getattr(obj, attr, default) or {} if any(
                 attr in include for include in self.context.get('include', [])) else None
         if attr == 'phone':
-            return getattr(obj, attr, default) if any(
+            return getattr(obj, attr, default) or {} if any(
                 attr in include for include in self.context.get('include', [])) else None
         if attr == 'avatar':
-            return getattr(obj, attr, default) if any(
+            return getattr(obj, attr, default) or {} if any(
                 attr in include for include in self.context.get('include', [])) else None
         else:
             return getattr(obj, attr, default)

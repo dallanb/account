@@ -18,9 +18,9 @@ class Account(db.Model, BaseMixin):
     # Relationship
     account_status = db.relationship("Status")
     account_role = db.relationship("Role")
-    address = db.relationship("Address", backref=db.backref("account", uselist=False))
-    phone = db.relationship("Phone", backref=db.backref("account", uselist=False))
-    avatar = db.relationship("Avatar", backref=db.backref("avatar", uselist=False))
+    address = db.relationship("Address", back_populates="account")
+    phone = db.relationship("Phone", back_populates="account")
+    avatar = db.relationship("Avatar", back_populates="account")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
