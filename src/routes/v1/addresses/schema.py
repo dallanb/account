@@ -1,4 +1,4 @@
-from marshmallow import validate, Schema, post_dump
+from marshmallow import Schema, post_dump
 from webargs import fields
 
 
@@ -14,6 +14,8 @@ class DumpAddressSchema(Schema):
     postal_code = fields.String()
 
     def get_attribute(self, obj, attr, default):
+        if attr == 'country':
+            return getattr(obj.country, 'code', default)
         return getattr(obj, attr, default)
 
     @post_dump
