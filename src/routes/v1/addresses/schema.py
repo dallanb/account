@@ -15,7 +15,7 @@ class DumpAddressSchema(Schema):
 
     def get_attribute(self, obj, attr, default):
         if attr == 'country':
-            return getattr(obj.country, 'code', default)
+            return obj.country.code if getattr(obj, 'country', None) else default
         return getattr(obj, attr, default)
 
     @post_dump
