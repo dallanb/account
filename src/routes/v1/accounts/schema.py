@@ -4,7 +4,6 @@ from ..addresses.schema import DumpAddressSchema, UpdateAddressSchema
 from ..phones.schema import DumpPhoneSchema, UpdatePhoneSchema
 from ..avatars.schema import DumpAvatarSchema
 
-
 class DumpAccountSchema(Schema):
     uuid = fields.UUID()
     ctime = fields.Integer()
