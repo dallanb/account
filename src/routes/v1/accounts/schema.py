@@ -1,8 +1,10 @@
-from marshmallow import validate, Schema, post_dump
+from marshmallow import Schema, post_dump
 from webargs import fields
+
 from ..addresses.schema import DumpAddressSchema, UpdateAddressSchema
-from ..phones.schema import DumpPhoneSchema, UpdatePhoneSchema
 from ..avatars.schema import DumpAvatarSchema
+from ..phones.schema import DumpPhoneSchema, UpdatePhoneSchema
+
 
 class DumpAccountSchema(Schema):
     uuid = fields.UUID()
@@ -58,8 +60,16 @@ class FetchAllAccountSchema(Schema):
     last_name = fields.String(required=False)
 
 
+class SearchAccountSchema(Schema):
+    page = fields.Int(required=False, missing=1)
+    per_page = fields.Int(required=False, missing=10)
+    key = fields.String(attribute='search.key', data_key='key')
+    fields = fields.DelimitedList(fields.String(), attribute='search.fields', data_key='fields')
+
+
 dump_schema = DumpAccountSchema()
 dump_many_schema = DumpAccountSchema(many=True)
 update_schema = UpdateAccountSchema()
 fetch_schema = FetchAccountSchema()
 fetch_all_schema = FetchAllAccountSchema()
+search_schema = SearchAccountSchema()
