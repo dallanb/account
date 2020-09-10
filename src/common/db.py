@@ -2,7 +2,7 @@ import collections
 import logging
 
 import inflect
-from sqlalchemy import inspect
+from sqlalchemy import inspect, or_, and_
 
 from .. import db
 from ..common.cleaner import Cleaner
@@ -10,12 +10,37 @@ from ..common.error import *
 
 
 class DB:
-    @classmethod
     # Helpers
+
+    @classmethod
     def _query_builder(cls, model, filters=[], expand=[], include=[], sort_by=None, limit=None, offset=None):
         query = db.session.query(model)
-        for k, v in filters:
-            query = cls._apply_query_filter(query, k, v)
+        for logic_operator, filter_arr in filters:
+            criterion = []
+            for key, value in filter_arr:
+                if key == 'like':
+                    for like_k, like_v in value:
+                        search = "%{}%".format(like_v)
+                        criterion.append(like_k.like(search))
+                if key == 'equal':
+                    for equal_k, equal_v in value:
+                        criterion.append(equal_k == equal_v)
+                if key == 'gt':
+                    for gt_k, gt_v in value:
+                        criterion.append(gt_k > gt_v)
+                if key == 'gte':
+                    for gte_k, gte_v in value:
+                        criterion.append(gte_k >= gte_v)
+                if key == 'lt':
+                    for lt_k, lt_v in value:
+                        criterion.append(lt_k < lt_v)
+                if key == 'lte':
+                    for lte_k, lte_v in value:
+                        criterion.append(lte_k <= lte_v)
+            if logic_operator == 'or':
+                query = query.filter(or_(*criterion))
+            if logic_operator == 'and':
+                query = query.filter(and_(*criterion))
         for i, k in enumerate(expand):
             tables = k.split('.')
             for j, table in enumerate(tables):
@@ -64,29 +89,6 @@ class DB:
                 return c
 
     @classmethod
-    def _apply_query_filter(cls, query, key, value):
-        if key == 'like':
-            for like_k, like_v in value:
-                search = "%{}%".format(like_v)
-                query = query.filter(like_k.like(search))
-        if key == 'equal':
-            for equal_k, equal_v in value:
-                query = query.filter(equal_k == equal_v)
-        if key == 'gt':
-            for gt_k, gt_v in value:
-                query = query.filter(gt_k > gt_v)
-        if key == 'gte':
-            for gte_k, gte_v in value:
-                query = query.filter(gte_k >= gte_v)
-        if key == 'lt':
-            for lt_k, lt_v in value:
-                query = query.filter(lt_k < lt_v)
-        if key == 'lte':
-            for lte_k, lte_v in value:
-                query = query.filter(lte_k <= lte_v)
-        return query
-
-    @classmethod
     def _is_pending(cls, instance):
         inspection = inspect(instance)
         return inspection.pending
@@ -132,19 +134,43 @@ class DB:
     def find(cls, model, page=None, per_page=None, expand=[], include=[], nested={}, search={}, **kwargs):
         filters = []
         for k, v in kwargs.items():
-            filters.append(('equal', [(getattr(model, k), v)]))
+            filters.append(
+                (
+                    'and',
+                    [
+                        ('equal', [(getattr(model, k), v)])
+                    ]
+                )
+            )
 
         for k, v in nested.items():
             nested_class = cls.get_class_by_tablename(k)
             for nested_k, nested_v in v.items():
-                filters.append(('equal', [(getattr(nested_class, nested_k), nested_v)]))
+                filters.append(
+                    (
+                        'and',
+                        [
+                            ('equal', [(getattr(nested_class, nested_k), nested_v)])
+                        ]
+                    )
+                )
 
         if 'key' in search:
-            for field in search['fields']:
-                filters.append(('like', [(getattr(model, field), search['key'])]))
+            filters.append(
+                (
+                    'or',
+                    [
+                        (
+                            'like',
+                            [
+                                (getattr(model, field), search['key'])
+                            ]
+                        ) for field in search['fields']
+                    ]
+                )
+            )
 
         query = cls._query_builder(model=model, filters=filters, include=include, expand=expand)
-        logging.info(query)
 
         if page is not None and per_page is not None:
             paginate = query.paginate(page, per_page, False)
