@@ -52,7 +52,7 @@ from .common import (
 )
 
 # move this somewhere else
-if app.config['ENV'] == 'development':
+if app.config['ENV'] != 'development':
     # error handling
     @app.errorhandler(Exception)
     @marshal_with(ErrorResponse.marshallable())
@@ -79,3 +79,4 @@ def handle_request():
     g.cache = cache
     g.db = db
     g.config = app.config
+
