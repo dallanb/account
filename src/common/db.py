@@ -1,5 +1,4 @@
 import collections
-import logging
 
 import inflect
 from sqlalchemy import inspect, or_, and_
