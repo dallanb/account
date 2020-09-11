@@ -2,6 +2,7 @@ import collections
 
 import inflect
 from sqlalchemy import inspect, or_, and_
+from sqlalchemy.sql import functions
 
 from .. import db
 from ..common.cleaner import Cleaner
@@ -187,3 +188,4 @@ class DB:
         db.session.delete(instance)
         db.session.commit()
         return True
+
