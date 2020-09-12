@@ -1,4 +1,5 @@
 from sqlalchemy_utils import UUIDType
+from sqlalchemy.ext.hybrid import hybrid_property
 from .. import db
 from .mixins import BaseMixin
 from ..common import RoleEnum, StatusEnum
@@ -7,6 +8,7 @@ from ..common import RoleEnum, StatusEnum
 class Account(db.Model, BaseMixin):
     first_name = db.Column(db.String, nullable=True)
     last_name = db.Column(db.String, nullable=True)
+    # name = db.column_property(first_name + " " + last_name)
 
     # FK
     status = db.Column(db.Enum(StatusEnum), db.ForeignKey('status.name'), nullable=False)
@@ -24,6 +26,18 @@ class Account(db.Model, BaseMixin):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+    @hybrid_property
+    def name(self):
+        return f'{self.first_name} {self.last_name}'
+
+    @name.setter
+    def name(self, value):
+        self.first_name, self.last_name = value.split(' ', 1)
+
+    @name.expression
+    def name(self):
+        return db.func.concat(self.first_name, ' ', self.last_name)
 
 
 Account.register()

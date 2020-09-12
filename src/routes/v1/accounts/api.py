@@ -107,6 +107,7 @@ class AccountsListSearchAPI(Base):
         self.account = Account()
 
     @marshal_with(DataResponse.marshallable())
+    @check_user
     def get(self):
         data = self.clean(schema=search_schema, instance=request.args)
         accounts = self.account.find(**data)

@@ -10,7 +10,7 @@ services:
     ports:
       - 8080:8080
   account:
-    container_name: accounty
+    container_name: account
     build:
       context: ${HUNCHO_DIR}/services/account
       dockerfile: ${HUNCHO_DIR}/services/account/build/Dockerfile
@@ -35,7 +35,7 @@ services:
       - account_cache
       - account_db
   account_cache:
-    container_name: accounty_cache
+    container_name: account_cache
     build:
       context: ${HUNCHO_DIR}/services/redis
       dockerfile: ${HUNCHO_DIR}/services/redis/build/Dockerfile
@@ -51,7 +51,7 @@ services:
       timeout: 10s
       retries: 5
   account_db:
-    container_name: accounty_db
+    container_name: account_db
     build:
       context: ${HUNCHO_DIR}/services/postgresql
       dockerfile: ${HUNCHO_DIR}/services/postgresql/build/Dockerfile
@@ -67,7 +67,7 @@ services:
       timeout: 5s
       retries: 20
   account_proxy:
-    container_name: accounty_proxy
+    container_name: account_proxy
     build:
       context: ${HUNCHO_DIR}/services/account/proxy
       dockerfile: ${HUNCHO_DIR}/services/account/proxy/build/Dockerfile
