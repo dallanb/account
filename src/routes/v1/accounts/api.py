@@ -132,7 +132,7 @@ class AccountsListBulkAPI(Base):
         self.account = Account()
 
     @marshal_with(DataResponse.marshallable())
-    @check_user
+    # @check_user
     def post(self):
         data = self.clean(schema=bulk_schema, instance={**request.get_json(), **request.args.to_dict()})
         accounts = self.account.find(**data)
