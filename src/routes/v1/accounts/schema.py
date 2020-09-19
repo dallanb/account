@@ -75,7 +75,7 @@ class _BulkAccountWithinSchema(Schema):
     value = fields.List(fields.String(), required=True)
 
     @post_load
-    def clean_within(self, in_data):
+    def clean_within(self, in_data, **kwargs):
         return {in_data['key']: in_data['value']}
 
 
