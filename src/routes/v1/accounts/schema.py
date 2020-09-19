@@ -10,6 +10,9 @@ class DumpAccountSchema(Schema):
     uuid = fields.UUID()
     ctime = fields.Integer()
     mtime = fields.Integer()
+    membership_uuid = fields.UUID()
+    email = fields.String()
+    username = fields.String()
     first_name = fields.String()
     last_name = fields.String()
     address = fields.Nested(DumpAddressSchema)
@@ -70,7 +73,7 @@ class SearchAccountSchema(Schema):
 class BulkAccountSchema(Schema):
     page = fields.Int(required=False, missing=1)
     per_page = fields.Int(required=False, missing=10)
-    uuid = fields.List(fields.String(), attribute='within.uuid', data_key='uuid')
+    membership_uuid = fields.List(fields.String(), attribute='within.membership_uuid', data_key='membership_uuid')
     include = fields.DelimitedList(fields.String(), required=False, missing=[])
 
 

@@ -1,4 +1,4 @@
-from sqlalchemy_utils import UUIDType
+from sqlalchemy_utils import EmailType, UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from .. import db
 from .mixins import BaseMixin
@@ -6,6 +6,9 @@ from ..common import RoleEnum, StatusEnum
 
 
 class Account(db.Model, BaseMixin):
+    membership_uuid = db.Column(UUIDType(binary=False), primary_key=True, nullable=False)
+    email = db.Column(EmailType, unique=True, nullable=False)
+    username = db.Column(db.String(255), unique=True, nullable=False)
     first_name = db.Column(db.String, nullable=True)
     last_name = db.Column(db.String, nullable=True)
     # name = db.column_property(first_name + " " + last_name)

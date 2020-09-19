@@ -6,7 +6,7 @@ from ..common.error import ManualException
 class Base:
     def __init__(self):
         self.db = DB()
-        self.cache = Cache()
+        # self.cache = Cache()
         self.event = Event()
         self.mail = Mail()
         self.logger = logging.getLogger(__name__)

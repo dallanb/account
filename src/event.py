@@ -1,4 +1,4 @@
-from .services import Membership
+from .services import Account
 
 
 def new_event_listener(event):
@@ -6,4 +6,4 @@ def new_event_listener(event):
     key = event.key
     data = event.value
     if topic == 'auth':
-        Membership().handle_event(key=key, data=data)
+        Account().handle_event(key=key, data=data)
