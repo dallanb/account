@@ -9,6 +9,8 @@ services:
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - app-net
   account:
     container_name: account
     build:
@@ -33,24 +35,28 @@ services:
       timeout: 5s
       retries: 5
     depends_on:
-      - account_cache
+#      - account_cache
       - account_db
-  account_cache:
-    container_name: account_cache
-    build:
-      context: ${HUNCHO_DIR}/services/redis
-      dockerfile: ${HUNCHO_DIR}/services/redis/build/Dockerfile
-    restart: unless-stopped
-    volumes:
-      - ${HUNCHO_DIR}/data/dev/account_cache/redis_data:/var/lib/redis
-      - ${HUNCHO_DIR}/data/dev/account_cache/redis.conf:/usr/local/etc/redis/redis.conf
-    env_file:
-      - ${HUNCHO_DIR}/env/dev/.env.account_cache
-    healthcheck:
-      test: [ "CMD", "redis-cli","ping" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+    networks:
+      - app-net
+#  account_cache:
+#    container_name: account_cache
+#    build:
+#      context: ${HUNCHO_DIR}/services/redis
+#      dockerfile: ${HUNCHO_DIR}/services/redis/build/Dockerfile
+#    restart: unless-stopped
+#    volumes:
+#      - ${HUNCHO_DIR}/data/dev/account_cache/redis_data:/var/lib/redis
+#      - ${HUNCHO_DIR}/data/dev/account_cache/redis.conf:/usr/local/etc/redis/redis.conf
+#    env_file:
+#      - ${HUNCHO_DIR}/env/dev/.env.account_cache
+#    healthcheck:
+#      test: [ "CMD", "redis-cli","ping" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#    networks:
+#      - app-net
   account_db:
     container_name: account_db
     build:
@@ -67,6 +73,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 20
+    networks:
+      - app-net
   account_proxy:
     container_name: account_proxy
     build:
@@ -79,7 +87,9 @@ services:
       - 80:80
     depends_on:
       - account
+    networks:
+      - app-net
 networks:
-  default:
-    external:
-      name: build_app-net
+    app-net:
+        external:
+            name: build_app-net

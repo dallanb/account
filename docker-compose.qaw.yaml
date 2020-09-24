@@ -9,6 +9,8 @@ services:
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - app-net
   account:
     container_name: account
     build:
@@ -35,6 +37,8 @@ services:
     depends_on:
 #      - account_cache
       - account_db
+    networks:
+      - app-net
 #  account_cache:
 #    container_name: account_cache
 #    build:
@@ -67,6 +71,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 20
+    networks:
+      - app-net
   account_proxy:
     container_name: account_proxy
     build:
@@ -79,7 +85,9 @@ services:
       - 80:80
     depends_on:
       - account
+    networks:
+      - app-net
 networks:
-  default:
-    external:
-      name: build_app-net
+    app-net:
+        external:
+            name: build_app-net
