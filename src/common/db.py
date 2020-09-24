@@ -2,7 +2,6 @@ import collections
 
 import inflect
 from sqlalchemy import inspect, or_, and_
-from sqlalchemy.sql import functions
 
 from .. import db
 from ..common.cleaner import Cleaner
@@ -37,6 +36,9 @@ class DB:
                 if key == 'lte':
                     for lte_k, lte_v in value:
                         criterion.append(lte_k <= lte_v)
+                if key == 'in':
+                    for in_k, in_v in value:
+                        criterion.append(in_k.in_(in_v))
             if logic_operator == 'or':
                 query = query.filter(or_(*criterion))
             if logic_operator == 'and':
@@ -108,6 +110,87 @@ class DB:
         return p.singular_noun(tablename)
 
     @classmethod
+    def _generate_equal_filter(cls, model, **kwargs):
+        equal_filter = []
+        for k, v in kwargs.items():
+            equal_filter.append(
+                (
+                    'and',
+                    [
+                        ('equal', [(getattr(model, k), v)])
+                    ]
+                )
+            )
+        return equal_filter
+
+    @classmethod
+    def _generate_nested_filter(cls, nested):
+        nested_filter = []
+        for k, v in nested.items():
+            nested_class = cls.get_class_by_tablename(k)
+            for nested_k, nested_v in v.items():
+                nested_filter.append(
+                    (
+                        'and',
+                        [
+                            ('equal', [(getattr(nested_class, nested_k), nested_v)])
+                        ]
+                    )
+                )
+        return nested_filter
+
+    @classmethod
+    def _generate_search_filter(cls, model, search):
+        search_filter = []
+        if 'key' in search:
+            search_filter.append(
+                (
+                    'or',
+                    [
+                        (
+                            'like',
+                            [
+                                (getattr(model, field), search['key'])
+                            ]
+                        ) for field in search['fields']
+                    ]
+                )
+            )
+        return search_filter
+
+    @classmethod
+    def _generate_in_filter(cls, model, within):
+        in_filter = []
+        for k, v in within.items():
+            in_filter.append(
+                (
+                    'and',
+                    [
+                        ('in', [(getattr(model, k), v)])
+                    ]
+                )
+            )
+        return in_filter
+
+    @classmethod
+    def _generate_filters(cls, model, nested=None, search=None, within=None, **kwargs):
+        filters = []
+
+        if len(kwargs):
+            filters.extend(cls._generate_equal_filter(model=model, **kwargs))
+
+        if nested:
+            filters.extend(cls._generate_nested_filter(nested=nested))
+
+        if search:
+            filters.extend(cls._generate_search_filter(model=model, search=search))
+
+        if within:
+            filters.extend(cls._generate_in_filter(model=model, within=within))
+
+        return filters
+
+    @classmethod
     # Methods
     def init(cls, model, **kwargs):
         return model(**kwargs)
@@ -131,45 +214,9 @@ class DB:
 
     @classmethod
     # TODO: Consider using dataclass instead of a named tuple
-    def find(cls, model, page=None, per_page=None, expand=[], include=[], nested={}, search={}, **kwargs):
-        filters = []
-        for k, v in kwargs.items():
-            filters.append(
-                (
-                    'and',
-                    [
-                        ('equal', [(getattr(model, k), v)])
-                    ]
-                )
-            )
-
-        for k, v in nested.items():
-            nested_class = cls.get_class_by_tablename(k)
-            for nested_k, nested_v in v.items():
-                filters.append(
-                    (
-                        'and',
-                        [
-                            ('equal', [(getattr(nested_class, nested_k), nested_v)])
-                        ]
-                    )
-                )
-
-        if 'key' in search:
-            filters.append(
-                (
-                    'or',
-                    [
-                        (
-                            'like',
-                            [
-                                (getattr(model, field), search['key'])
-                            ]
-                        ) for field in search['fields']
-                    ]
-                )
-            )
-
+    def find(cls, model, page=None, per_page=None, expand=[], include=[], nested=None, search=None, within=None,
+             **kwargs):
+        filters = cls._generate_filters(model=model, nested=nested, search=search, within=within, **kwargs)
         query = cls._query_builder(model=model, filters=filters, include=include, expand=expand)
 
         if page is not None and per_page is not None:
@@ -188,4 +235,3 @@ class DB:
         db.session.delete(instance)
         db.session.commit()
         return True
-

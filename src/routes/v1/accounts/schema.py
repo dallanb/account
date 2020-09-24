@@ -1,4 +1,4 @@
-from marshmallow import Schema, post_dump
+from marshmallow import Schema, post_dump, post_load
 from webargs import fields
 
 from ..addresses.schema import DumpAddressSchema, UpdateAddressSchema
@@ -10,6 +10,9 @@ class DumpAccountSchema(Schema):
     uuid = fields.UUID()
     ctime = fields.Integer()
     mtime = fields.Integer()
+    membership_uuid = fields.UUID()
+    email = fields.String()
+    username = fields.String()
     first_name = fields.String()
     last_name = fields.String()
     address = fields.Nested(DumpAddressSchema)
@@ -67,9 +70,26 @@ class SearchAccountSchema(Schema):
     fields = fields.DelimitedList(fields.String(), attribute='search.fields', data_key='fields')
 
 
+class _BulkAccountWithinSchema(Schema):
+    key = fields.String(required=True)
+    value = fields.List(fields.String(), required=True)
+
+    @post_load
+    def clean_within(self, in_data, **kwargs):
+        return {in_data['key']: in_data['value']}
+
+
+class BulkAccountSchema(Schema):
+    page = fields.Int(required=False, missing=1)
+    per_page = fields.Int(required=False, missing=10)
+    within = fields.Nested(_BulkAccountWithinSchema)
+    include = fields.DelimitedList(fields.String(), required=False, missing=[])
+
+
 dump_schema = DumpAccountSchema()
 dump_many_schema = DumpAccountSchema(many=True)
 update_schema = UpdateAccountSchema()
 fetch_schema = FetchAccountSchema()
 fetch_all_schema = FetchAllAccountSchema()
 search_schema = SearchAccountSchema()
+bulk_schema = BulkAccountSchema()

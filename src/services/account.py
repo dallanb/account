@@ -1,7 +1,8 @@
 import logging
+from http import HTTPStatus
+
 from .base import Base
 from ..models import Account as AccountModel
-from http import HTTPStatus
 
 
 class Account(Base):
@@ -42,3 +43,26 @@ class Account(Base):
         if not accounts.total:
             self.error(code=HTTPStatus.NOT_FOUND)
         return Base.destroy(self, instance=accounts.items[0])
+
+    def handle_event(self, key, data):
+        if key == 'auth_created':
+            # create an account
+            _ = Account().create(membership_uuid=data['uuid'], username=data['username'], email=data['email'],
+                                 status='active', role='member')
+
+    def generate_mail(self, uuid, type):
+        accounts = self.find(uuid=uuid)
+        if not accounts.total:
+            self.error(code=HTTPStatus.NOT_FOUND)
+        account = accounts.items[0]
+
+        # handle various types of mail here
+        if type == 'register':
+            subject = 'Tech Tapir Registration'
+            body = self.mail.generate_body('register', user=account)
+
+        return {
+            'to': account.email,
+            'subject': subject,
+            'html': body
+        }

@@ -26,10 +26,10 @@ def assign_user(f):
         if kwargs['uuid'] == 'me':
             # find current user
             db = DB()
-            memberships = db.find(model=db.get_class_by_tablename('membership'), membership_uuid=g.user)
-            if not memberships.total:
+            accounts = db.find(model=db.get_class_by_tablename('account'), membership_uuid=g.user)
+            if not accounts.total:
                 raise ManualException(code=HTTPStatus.UNAUTHORIZED.value, msg=HTTPStatus.UNAUTHORIZED.phrase)
-            kwargs['uuid'] = memberships.items[0].account_uuid
+            kwargs['uuid'] = accounts.items[0].uuid
         return f(*args, **kwargs)
 
     wrap.__doc__ = f.__doc__

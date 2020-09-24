@@ -124,3 +124,31 @@ class AccountsListSearchAPI(Base):
                 )
             }
         )
+
+
+class AccountsListBulkAPI(Base):
+    def __init__(self):
+        Base.__init__(self)
+        self.account = Account()
+
+    @marshal_with(DataResponse.marshallable())
+    @check_user
+    def post(self):
+        data = self.clean(schema=bulk_schema, instance={**request.get_json(), **request.args.to_dict()})
+        accounts = self.account.find(**data)
+        return DataResponse(
+            data={
+                '_metadata': self.prepare_metadata(
+                    total_count=accounts.total,
+                    page_count=len(accounts.items),
+                    page=data['page'],
+                    per_page=data['per_page']),
+                'accounts': self.dump(
+                    schema=dump_many_schema,
+                    instance=accounts.items,
+                    params={
+                        'include': data['include']
+                    }
+                )
+            }
+        )
