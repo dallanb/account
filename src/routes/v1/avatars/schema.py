@@ -1,3 +1,4 @@
+from flask import g
 from marshmallow import validate, Schema, post_dump, pre_load
 from webargs import fields
 from werkzeug.utils import secure_filename
@@ -15,7 +16,7 @@ class CreateAvatarSchema(Schema):
         avatar = in_data['avatar']
         assert allowed_file(avatar.filename), "Invalid file type"
         in_data['filename'] = secure_filename(avatar.filename)
-        in_data['s3_filename'] = f"{generate_token()}.{file_extension(avatar.filename)}"
+        in_data['s3_filename'] = f"{g.user}.{file_extension(avatar.filename)}"
         in_data['avatar'].filename = in_data['s3_filename']
         return in_data
 

@@ -13,7 +13,7 @@ services:
     container_name: account
     build:
       context: ${HUNCHO_DIR}/services/account
-      dockerfile: ${HUNCHO_DIR}/services/account/build/Dockerfile
+      dockerfile: ${HUNCHO_DIR}/services/account/build/Dockerfile.qaw
     restart: on-failure
     volumes:
       - ${HUNCHO_DIR}/services/account/migrations:/home/app/migrations
@@ -25,32 +25,32 @@ services:
       - ${HUNCHO_DIR}/services/account/manage.py:/home/app/manage.py
       - ${HUNCHO_DIR}/services/account/setup.py:/home/app/setup.py
     env_file:
-      - ${HUNCHO_DIR}/env/dev/.env.account
+      - ${HUNCHO_DIR}/env/qaw/.env.account
       - ${HUNCHO_DIR}/secrets/s3/credentials.txt
     healthcheck:
       test: curl --fail -s account:5000/ping || exit 1
-      interval: 60s
+      interval: 10s
       timeout: 5s
       retries: 5
     depends_on:
-      - account_cache
+#      - account_cache
       - account_db
-  account_cache:
-    container_name: account_cache
-    build:
-      context: ${HUNCHO_DIR}/services/redis
-      dockerfile: ${HUNCHO_DIR}/services/redis/build/Dockerfile
-    restart: unless-stopped
-    volumes:
-      - ${HUNCHO_DIR}/data/dev/account_cache/redis_data:/var/lib/redis
-      - ${HUNCHO_DIR}/data/dev/account_cache/redis.conf:/usr/local/etc/redis/redis.conf
-    env_file:
-      - ${HUNCHO_DIR}/env/dev/.env.account_cache
-    healthcheck:
-      test: [ "CMD", "redis-cli","ping" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+#  account_cache:
+#    container_name: account_cache
+#    build:
+#      context: ${HUNCHO_DIR}/services/redis
+#      dockerfile: ${HUNCHO_DIR}/services/redis/build/Dockerfile
+#    restart: unless-stopped
+#    volumes:
+#      - ${HUNCHO_DIR}/data/qaw/account_cache/redis_data:/var/lib/redis
+#      - ${HUNCHO_DIR}/data/qaw/account_cache/redis.conf:/usr/local/etc/redis/redis.conf
+#    env_file:
+#      - ${HUNCHO_DIR}/env/qaw/.env.account_cache
+#    healthcheck:
+#      test: [ "CMD", "redis-cli","ping" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
   account_db:
     container_name: account_db
     build:
@@ -59,9 +59,9 @@ services:
       args:
         POSTGRES_VERSION: 9.6
     volumes:
-      - ${HUNCHO_DIR}/data/dev/account_db/data:/var/lib/postgresql/data/
+      - ${HUNCHO_DIR}/data/qaw/account_db/data:/var/lib/postgresql/data/
     env_file:
-      - ${HUNCHO_DIR}/env/dev/.env.account_db
+      - ${HUNCHO_DIR}/env/qaw/.env.account_db
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U account" ]
       interval: 10s
@@ -79,3 +79,7 @@ services:
       - 80:80
     depends_on:
       - account
+networks:
+  default:
+    external:
+      name: build_app-net
