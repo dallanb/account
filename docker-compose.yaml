@@ -79,3 +79,7 @@ services:
       - 80:80
     depends_on:
       - account
+networks:
+  default:
+    external:
+      name: build_app-net
