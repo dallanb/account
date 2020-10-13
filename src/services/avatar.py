@@ -12,14 +12,14 @@ class Avatar(Base):
         Base.__init__(self)
         self.logger = logging.getLogger(__name__)
         self.s3 = S3(aws_access_key_id=app.config['S3_ACCESS_KEY'], aws_secret_access_key=app.config['S3_SECRET_KEY'])
-        self.account_model = AvatarModel
+        self.avatar_model = AvatarModel
 
     def find(self, **kwargs):
-        return Base.find(self, model=self.account_model, **kwargs)
+        return Base.find(self, model=self.avatar_model, **kwargs)
 
     def create(self, **kwargs):
-        account = self.init(model=self.account_model, **kwargs)
-        return self.save(instance=account)
+        avatar = self.init(model=self.avatar_model, **kwargs)
+        return self.save(instance=avatar)
 
     def update(self, uuid, **kwargs):
         avatars = self.find(uuid=uuid)
@@ -28,8 +28,8 @@ class Avatar(Base):
         return self.apply(instance=avatars.items[0], **kwargs)
 
     def apply(self, instance, **kwargs):
-        account = self.assign_attr(instance=instance, attr=kwargs)
-        return self.save(instance=account)
+        avatar = self.assign_attr(instance=instance, attr=kwargs)
+        return self.save(instance=avatar)
 
     def destroy(self, uuid, ):
         avatars = self.find(uuid=uuid)
