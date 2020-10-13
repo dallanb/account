@@ -45,28 +45,20 @@ class DB:
                 query = query.filter(and_(*criterion))
         for i, k in enumerate(expand):
             tables = k.split('.')
+            options = db.lazyload(getattr(model, tables[0]))
             for j, table in enumerate(tables):
-                if j == 0:
-                    # query = query.join(getattr(model, table))
-                    options = db.lazyload(getattr(model, table))
-                else:
-                    nested_class = cls.get_class_by_tablename(tables[j - 1])
-                    # query = query.join(getattr(nested_class, table))
+                if j > 0:
+                    nested_class = cls._get_class_by_tablename(tables[j - 1])
                     options = options.lazyload(getattr(nested_class, table))
-            if i == len(expand) - 1:
-                query = query.options(options)
+            query = query.options(options)
         for i, k in enumerate(include):
             tables = k.split('.')
+            options = db.joinedload(getattr(model, tables[0]))
             for j, table in enumerate(tables):
-                if j == 0:
-                    # query = query.join(getattr(model, table))
-                    options = db.joinedload(getattr(model, table))
-                else:
-                    nested_class = cls.get_class_by_tablename(cls._singularize(tables[j - 1]))
-                    # query = query.join(getattr(nested_class, table))
+                if j > 0:
+                    nested_class = cls._get_class_by_tablename(cls._singularize(tables[j - 1]))
                     options = options.joinedload(getattr(nested_class, table))
-            if i == len(include) - 1:
-                query = query.options(options)
+            query = query.options(options)
         if sort_by is not None:
             direction = re.search('[.](a|de)sc', sort_by)
             if direction is not None:
@@ -85,7 +77,7 @@ class DB:
         return query
 
     @classmethod
-    def get_class_by_tablename(cls, tablename):
+    def _get_class_by_tablename(cls, tablename):
         for c in db.Model._decl_class_registry.values():
             if hasattr(c, '__tablename__') and c.__tablename__ == tablename:
                 return c
@@ -127,7 +119,7 @@ class DB:
     def _generate_nested_filter(cls, nested):
         nested_filter = []
         for k, v in nested.items():
-            nested_class = cls.get_class_by_tablename(k)
+            nested_class = cls._get_class_by_tablename(k)
             for nested_k, nested_v in v.items():
                 nested_filter.append(
                     (
