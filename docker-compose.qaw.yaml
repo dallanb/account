@@ -35,11 +35,12 @@ services:
       timeout: 5s
       retries: 5
     depends_on:
-#      - account_cache
+      #      - account_cache
       - account_db
     networks:
       - app-net
-#  account_cache:
+      - kong-net
+  #  account_cache:
 #    container_name: account_cache
 #    build:
 #      context: ${HUNCHO_DIR}/services/redis
@@ -91,3 +92,6 @@ networks:
     app-net:
         external:
             name: build_app-net
+    kong-net:
+        external:
+            name: build_kong-net
