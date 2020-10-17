@@ -1,4 +1,4 @@
-from .accounts import AccountsAPI, AccountsListAPI, AccountsListSearchAPI, AccountsListBulkAPI
+from .accounts import AccountsAPI, AccountsListAPI, AccountsListSearchAPI, AccountsListBulkAPI, AccountsMembershipAPI
 from .avatars import AvatarsAPI
 from .base import Base
 from .mail import MailAPI

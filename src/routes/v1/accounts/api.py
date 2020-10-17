@@ -152,3 +152,29 @@ class AccountsListBulkAPI(Base):
                 )
             }
         )
+
+
+class AccountsMembershipAPI(Base):
+    def __init__(self):
+        Base.__init__(self)
+        self.account = Account()
+
+    @marshal_with(DataResponse.marshallable())
+    @check_user
+    def get(self, uuid):
+        data = self.clean(schema=fetch_schema, instance=request.args)
+        accounts = self.account.find(membership_uuid=uuid, **data)
+        if not accounts.total:
+            self.throw_error(http_code=self.code.NOT_FOUND)
+        return DataResponse(
+            data={
+                'membership': self.dump(
+                    schema=dump_schema,
+                    instance=accounts.items[0],
+                    params={
+                        'include': data['include'],
+                        'expand': data['expand']
+                    }
+                )
+            }
+        )

@@ -10,7 +10,6 @@ from ..common.error import *
 
 class DB:
     # Helpers
-
     @classmethod
     def _query_builder(cls, model, filters=[], expand=[], include=[], sort_by=None, limit=None, offset=None):
         query = db.session.query(model)
@@ -182,8 +181,8 @@ class DB:
 
         return filters
 
-    @classmethod
     # Methods
+    @classmethod
     def init(cls, model, **kwargs):
         return model(**kwargs)
 
