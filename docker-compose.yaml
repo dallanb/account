@@ -24,8 +24,6 @@ services:
       - ${HUNCHO_DIR}/services/account/statics:/home/app/statics
       - ${HUNCHO_DIR}/services/account/manage.py:/home/app/manage.py
       - ${HUNCHO_DIR}/services/account/setup.py:/home/app/setup.py
-    ports:
-      - 20003:5000
     env_file:
       - ${HUNCHO_DIR}/env/dev/.env.account
       - ${HUNCHO_DIR}/secrets/s3/credentials.txt

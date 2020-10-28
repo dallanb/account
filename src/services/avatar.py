@@ -4,7 +4,7 @@ from .. import app
 from .base import Base
 from ..models import Avatar as AvatarModel
 from ..libs import S3
-from ..common.utils import s3_object_name
+from ..common.utils import s3_object_name, file_extension
 
 
 class Avatar(Base):
@@ -57,3 +57,7 @@ class Avatar(Base):
         if not result:
             self.error(code=HTTPStatus.INTERNAL_SERVER_ERROR)
         return
+
+    @staticmethod
+    def generate_s3_filename(filename, membership_uuid):
+        return f"{membership_uuid}.{file_extension(filename)}"

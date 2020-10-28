@@ -3,7 +3,7 @@ from flask_restful import marshal_with
 
 from .schema import *
 from ..base import Base
-from ....common.auth import check_user, assign_user
+from ....common.auth import assign_user
 from ....common.response import DataResponse
 from ....services import Account, Address, Phone
 
@@ -16,7 +16,6 @@ class AccountsAPI(Base):
         self.phone = Phone()
 
     @marshal_with(DataResponse.marshallable())
-    @check_user
     @assign_user
     def get(self, uuid):
         data = self.clean(schema=fetch_schema, instance=request.args)
@@ -37,7 +36,6 @@ class AccountsAPI(Base):
         )
 
     @marshal_with(DataResponse.marshallable())
-    @check_user
     @assign_user
     def put(self, uuid=None):
         data = self.clean(schema=update_schema, instance=request.get_json())
@@ -79,7 +77,6 @@ class AccountsListAPI(Base):
         self.account = Account()
 
     @marshal_with(DataResponse.marshallable())
-    @check_user
     def get(self):
         data = self.clean(schema=fetch_all_schema, instance=request.args)
         accounts = self.account.find(**data)
@@ -107,7 +104,6 @@ class AccountsListSearchAPI(Base):
         self.account = Account()
 
     @marshal_with(DataResponse.marshallable())
-    @check_user
     def get(self):
         data = self.clean(schema=search_schema, instance=request.args)
         accounts = self.account.find(**data)
@@ -132,7 +128,6 @@ class AccountsListBulkAPI(Base):
         self.account = Account()
 
     @marshal_with(DataResponse.marshallable())
-    @check_user
     def post(self):
         data = self.clean(schema=bulk_schema, instance={**request.get_json(), **request.args.to_dict()})
         accounts = self.account.find(**data)
@@ -160,7 +155,6 @@ class AccountsMembershipAPI(Base):
         self.account = Account()
 
     @marshal_with(DataResponse.marshallable())
-    @check_user
     def get(self, uuid):
         data = self.clean(schema=fetch_schema, instance=request.args)
         accounts = self.account.find(membership_uuid=uuid, **data)
