@@ -1,7 +1,9 @@
-from flask import g
-from flask_restful import Resource
+import logging
 from http import HTTPStatus
+
+from flask_restful import Resource
 from marshmallow import ValidationError
+
 from ...common.error import ManualException
 from ...services import Base as Service
 
@@ -9,7 +11,7 @@ from ...services import Base as Service
 class Base(Resource):
     def __init__(self):
         self.service = Service()
-        self.logger = g.logger.getLogger(__name__)
+        self.logger = logging.getLogger(__name__)
         self.code = HTTPStatus
 
     def dump(self, schema, instance, params=None):

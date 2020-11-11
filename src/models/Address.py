@@ -14,7 +14,6 @@ class Address(db.Model, BaseMixin):
     # Relationship
     account = db.relationship("Account", back_populates="address", uselist=False, lazy="noload")
 
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
