@@ -5,15 +5,21 @@ pipeline {
         registry = "dallanbhatti/account"
         registryCredential = 'dockerhub'
         dockerImage = ''
-        dockerFile = 'build/Dockerfile.qaw'
+        dockerImageName = ''
     }
     agent any
     stages {
         stage('Build') {
             steps {
                 script {
-                    echo "$BRANCH_NAME"
-                    dockerImage = docker.build(registry + ":$BRANCH_NAME", "-f ${dockerFile} .")
+                    dockerImageName = registry + ":$BRANCH_NAME"
+                    if (env.BRANCH_NAME == 'qaw' || env.BRANCH_NAME == 'prod') {
+                        dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME .")
+                    }
+                    else {
+                        dockerImage = docker.build(dockerImageName, "-f build/Dockerfile .")
+                    }
+
                 }
             }
         }
@@ -28,7 +34,7 @@ pipeline {
         }
         stage('Clean') {
             steps {
-                sh "docker rmi $registry:qaw"
+                sh "docker rmi $dockerImageName"
             }
         }
     }
