@@ -12,7 +12,8 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    dockerImage = docker.build(registry + ":qaw", "-f ${dockerFile} .")
+                    echo "$GIT_LOCAL_BRANCH"
+                    dockerImage = docker.build(registry + ":$GIT_LOCAL_BRANCH", "-f ${dockerFile} .")
                 }
             }
         }
