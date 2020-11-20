@@ -23,7 +23,6 @@ pipeline {
 //                     else {
 //                         dockerImage = docker.build(dockerImageName, "-f build/Dockerfile .")
 //                     }
-
                 }
             }
         }
