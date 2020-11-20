@@ -33,7 +33,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    if (dockerImage) {
+                    if (env.dockerImage) {
                         docker.withRegistry( '', registryCredential ) {
                             dockerImage.push()
                         }
@@ -44,7 +44,7 @@ pipeline {
         stage('Clean') {
             steps {
                 script {
-                    if (dockerImage) {
+                    if (env.dockerImage) {
                         sh "docker rmi $dockerImageName"
                     }
                 }
@@ -53,7 +53,7 @@ pipeline {
         stage('Recreate') {
             steps {
                 script {
-                    if (dockerImage) {
+                    if (env.dockerImage) {
                         httpRequest url: 'http://192.168.0.100:9000/hooks/redeploy', contentType: 'APPLICATION_JSON', httpMode: 'POST', requestBody: """
                             {
                                 "project": {
