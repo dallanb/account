@@ -9,4 +9,4 @@ class PingAPI(Base):
 
     @marshal_with(MessageResponse.marshallable())
     def get(self):
-        return MessageResponse(message='pang')
+        return MessageResponse(message='pong')
