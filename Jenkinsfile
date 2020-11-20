@@ -37,5 +37,10 @@ pipeline {
                 sh "docker rmi $dockerImageName"
             }
         }
+        stage('Recreate') {
+            steps {
+                httpRequest 'http://192.168.0.100:9000/hooks/redeploy'
+            }
+        }
     }
 }
