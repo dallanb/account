@@ -40,16 +40,17 @@ pipeline {
         }
         stage('Recreate') {
             steps {
-                if (env.BRANCH_NAME == 'dev') {
-
-                    httpRequest url: 'http://192.168.0.100:9000/hooks/redeploy', contentType: 'APPLICATION_JSON', httpMode: 'POST', requestBody: """
-                        {
-                            "project": {
-                                "name": "$container",
-                                "env": "$BRANCH_NAME"
+                script {
+                    if (env.BRANCH_NAME == 'dev') {
+                        httpRequest url: 'http://192.168.0.100:9000/hooks/redeploy', contentType: 'APPLICATION_JSON', httpMode: 'POST', requestBody: """
+                            {
+                                "project": {
+                                    "name": "$container",
+                                    "env": "$BRANCH_NAME"
+                                }
                             }
-                        }
-                    """
+                        """
+                    }
                 }
             }
         }
