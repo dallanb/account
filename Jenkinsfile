@@ -14,7 +14,8 @@ pipeline {
                     dockerImageName = registry + ":$BRANCH_NAME"
                     dockerImage = ''
                     if (env.BRANCH_NAME == 'qaw') {
-                        dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME --no-cache .")
+                        docker.image(dockerImageName).pull()
+                        dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME .")
                     }
 //                     if (env.BRANCH_NAME == 'qaw' || env.BRANCH_NAME == 'prod') {
 //                         dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME .")
@@ -40,7 +41,8 @@ pipeline {
             steps {
                 script {
                     if (dockerImage) {
-                        sh "docker rmi $dockerImageName"
+//                         sh "docker rmi $dockerImageName"
+                        echo "we will not be cleaning anything for now"
                     }
                 }
             }
