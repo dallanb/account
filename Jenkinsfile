@@ -2,6 +2,7 @@ pipeline {
 
     environment {
         githubCredential = 'github'
+        container = 'contest'
         registry = "dallanbhatti/account"
         registryCredential = 'dockerhub'
         dockerImage = ''
@@ -39,7 +40,14 @@ pipeline {
         }
         stage('Recreate') {
             steps {
-                httpRequest 'http://192.168.0.100:9000/hooks/redeploy'
+                httpRequest url: 'http://192.168.0.100:9000/hooks/redeploy' contentType: 'APPLICATION_JSON' httpMode: 'POST' requestBody: """
+                    {
+                        "project": {
+                            "name": "$container",
+                            "env": "$BRANCH_NAME"
+                        }
+                    }
+                """
             }
         }
     }
