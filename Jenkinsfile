@@ -43,7 +43,8 @@ pipeline {
             steps {
                 script {
                     if (dockerImage) {
-                        sh "docker rmi $dockerImageName"
+//                         sh "docker rmi $dockerImageName"
+                            echo 'skipping this for now'
                     }
                 }
             }
