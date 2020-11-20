@@ -12,11 +12,10 @@ pipeline {
             steps {
                 script {
                     dockerImageName = registry + ":$BRANCH_NAME"
-                    builderImageName = registry + ":builder"
                     dockerImage = ''
                     if (env.BRANCH_NAME == 'qaw') {
-                        docker.image(builderImageName).pull()
-                        dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME --cache-from $builderImageName .")
+                        docker.image(dockerImageName).pull()
+                        dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME .")
                     }
 //                     if (env.BRANCH_NAME == 'qaw' || env.BRANCH_NAME == 'prod') {
 //                         dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME .")
