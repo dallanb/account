@@ -5,9 +5,6 @@ pipeline {
         container = 'account'
         registry = "dallanbhatti/account"
         registryCredential = 'dockerhub'
-        dockerImage = ''
-        dockerImageName = ''
-        builderImageName = ''
     }
     agent any
     stages {
@@ -16,6 +13,7 @@ pipeline {
                 script {
                     dockerImageName = registry + ":$BRANCH_NAME"
                     builderImageName = registry + ":builder"
+                    dockerImage = ''
                     if (env.BRANCH_NAME == 'qaw') {
                         docker.image(builderImageName).pull()
                         dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME --cache-from $builderImageName .")
@@ -33,7 +31,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    if (env.dockerImage) {
+                    if (dockerImage) {
                         docker.withRegistry( '', registryCredential ) {
                             dockerImage.push()
                         }
@@ -44,7 +42,7 @@ pipeline {
         stage('Clean') {
             steps {
                 script {
-                    if (env.dockerImage) {
+                    if (dockerImage) {
                         sh "docker rmi $dockerImageName"
                     }
                 }
@@ -53,7 +51,7 @@ pipeline {
         stage('Recreate') {
             steps {
                 script {
-                    if (env.dockerImage) {
+                    if (dockerImage) {
                         httpRequest url: 'http://192.168.0.100:9000/hooks/redeploy', contentType: 'APPLICATION_JSON', httpMode: 'POST', requestBody: """
                             {
                                 "project": {
