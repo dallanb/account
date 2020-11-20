@@ -43,10 +43,11 @@ pipeline {
         }
         stage('Clean') {
             steps {
-                if (dockerImage) {
-                    sh "docker rmi $dockerImageName"
+                script {
+                    if (dockerImage) {
+                        sh "docker rmi $dockerImageName"
+                    }
                 }
-
             }
         }
         stage('Recreate') {
