@@ -15,7 +15,7 @@ pipeline {
                     dockerImage = ''
                     if (env.BRANCH_NAME == 'qaw') {
                         docker.image(dockerImageName).pull()
-                        dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME .")
+                        dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME --no-cache .")
                     }
 //                     if (env.BRANCH_NAME == 'qaw' || env.BRANCH_NAME == 'prod') {
 //                         dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME .")
