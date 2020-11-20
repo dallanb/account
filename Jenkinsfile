@@ -2,7 +2,7 @@ pipeline {
 
     environment {
         githubCredential = 'github'
-        container = 'contest'
+        container = 'account'
         registry = "dallanbhatti/account"
         registryCredential = 'dockerhub'
         dockerImage = ''
