@@ -41,8 +41,7 @@ pipeline {
             steps {
                 script {
                     if (dockerImage) {
-//                         sh "docker rmi $dockerImageName"
-                        echo "we will not be cleaning anything for now"
+                        sh "docker image prune -f"
                     }
                 }
             }
