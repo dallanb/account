@@ -40,7 +40,7 @@ pipeline {
         }
         stage('Recreate') {
             steps {
-                httpRequest url: 'http://192.168.0.100:9000/hooks/redeploy' contentType: 'APPLICATION_JSON' httpMode: 'POST' requestBody: """
+                httpRequest url: 'http://192.168.0.100:9000/hooks/redeploy', contentType: 'APPLICATION_JSON', httpMode: 'POST', requestBody: """
                     {
                         "project": {
                             "name": "$container",
