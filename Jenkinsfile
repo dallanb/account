@@ -9,6 +9,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                slackSend (color: '#0000FF', message: "STARTED: Building Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
                 script {
                     dockerImageName = registry + ":$BRANCH_NAME"
                     dockerImage = ''
@@ -21,6 +22,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
+                slackSend (color: '#0000FF', message: "STARTED: Deploying Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
                 script {
                     if (dockerImage) {
                         docker.withRegistry( '', registryCredential ) {
@@ -32,6 +34,7 @@ pipeline {
         }
         stage('Clean') {
             steps {
+                slackSend (color: '#0000FF', message: "STARTED: Cleaning Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
                 script {
                     if (dockerImage) {
                         sh "docker image prune -f"
@@ -41,6 +44,7 @@ pipeline {
         }
         stage('Recreate') {
             steps {
+                slackSend (color: '#0000FF', message: "STARTED: Recreating Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
                 script {
                     if (dockerImage) {
                         httpRequest url: 'http://192.168.0.100:9000/hooks/redeploy', contentType: 'APPLICATION_JSON', httpMode: 'POST', requestBody: """
@@ -58,7 +62,7 @@ pipeline {
     }
     post {
         success {
-          slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+          slackSend (color: '#00FF00', message: "SUCCESSFUL: Completed Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
         }
 
         failure {
