@@ -17,12 +17,6 @@ pipeline {
                         docker.image(dockerImageName).pull()
                         dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME --cache-from $dockerImageName .")
                     }
-//                     if (env.BRANCH_NAME == 'qaw' || env.BRANCH_NAME == 'prod') {
-//                         dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME .")
-//                     }
-//                     else {
-//                         dockerImage = docker.build(dockerImageName, "-f build/Dockerfile .")
-//                     }
                 }
             }
         }
