@@ -9,6 +9,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                slackSend (color: '#0000FF', message: "STARTED: Building Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
                 script {
                     dockerImageName = registry + ":$BRANCH_NAME"
                     dockerImage = ''
