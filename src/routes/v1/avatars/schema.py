@@ -10,7 +10,6 @@ class DumpAvatarSchema(Schema):
     uuid = fields.UUID()
     ctime = fields.Integer()
     mtime = fields.Integer()
-    # filename = fields.String()
     s3_filename = fields.String()
 
     def get_attribute(self, obj, attr, default):
@@ -22,7 +21,6 @@ class DumpAvatarSchema(Schema):
 
 
 class FetchAvatarSchema(Schema):
-    # filename = fields.String()
     s3_filename = fields.String()
 
 
