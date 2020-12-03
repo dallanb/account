@@ -1,5 +1,8 @@
+import base64
 import uuid as UUID
+from io import BytesIO
 from time import time
+
 from .. import app
 
 
@@ -40,3 +43,10 @@ def allowed_file(filename):
 
 def s3_object_name(filename):
     return f"{app.config['S3_FILEPATH']}{filename}"
+
+
+def get_image_data(file):
+    starter = file.find(',')
+    image_data = file[starter + 1:]
+    image_data = bytes(image_data, encoding="ascii")
+    return BytesIO(base64.b64decode(image_data))
