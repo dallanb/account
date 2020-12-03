@@ -29,7 +29,6 @@ class AvatarsAPI(Base):
         avatar = account.avatar
         _ = self.avatar.upload_fileobj(file=data['avatar'], filename=s3_filename)
         if not avatar:
-            _ = self.avatar.upload_fileobj(file=data['avatar'], filename=s3_filename)
             avatar = self.avatar.create(s3_filename=s3_filename)
             self.account.apply(instance=accounts.items[0], avatar=avatar)
         return DataResponse(
