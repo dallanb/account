@@ -48,7 +48,8 @@ class Account(Base):
         if key == 'auth_created':
             # create an account
             _ = Account().create(membership_uuid=data['uuid'], username=data['username'], email=data['email'],
-                                 status='active', role='member')
+                                 first_name=data['first_name'], last_name=data['last_name'], status='active',
+                                 role='member')
 
     def generate_mail(self, uuid, type):
         accounts = self.find(uuid=uuid)
