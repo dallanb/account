@@ -2,6 +2,7 @@ import logging
 from http import HTTPStatus
 
 from .base import Base
+from ..decorators import account_notification
 from ..models import Account as AccountModel
 
 
@@ -14,13 +15,9 @@ class Account(Base):
     def find(self, **kwargs):
         return Base.find(self, model=self.account_model, **kwargs)
 
+    @account_notification(operation='create')
     def create(self, **kwargs):
         account = self.init(model=self.account_model, **kwargs)
-        _ = self.notify(
-            topic='accounts',
-            value={'uuid': str(account.uuid)},
-            key='account_created'
-        )
         return self.save(instance=account)
 
     def update(self, uuid, **kwargs):
@@ -29,13 +26,9 @@ class Account(Base):
             self.error(code=HTTPStatus.NOT_FOUND)
         return self.apply(instance=accounts.items[0], **kwargs)
 
+    @account_notification(operation='update')
     def apply(self, instance, **kwargs):
         account = self.assign_attr(instance=instance, attr=kwargs)
-        _ = self.notify(
-            topic='accounts',
-            value={'uuid': str(account.uuid)},
-            key='account_updated'
-        )
         return self.save(instance=account)
 
     def destroy(self, uuid, ):
@@ -43,13 +36,6 @@ class Account(Base):
         if not accounts.total:
             self.error(code=HTTPStatus.NOT_FOUND)
         return Base.destroy(self, instance=accounts.items[0])
-
-    def handle_event(self, key, data):
-        if key == 'auth_created':
-            # create an account
-            _ = Account().create(membership_uuid=data['uuid'], username=data['username'], email=data['email'],
-                                 first_name=data['first_name'], last_name=data['last_name'], status='active',
-                                 role='member')
 
     def generate_mail(self, uuid, type):
         accounts = self.find(uuid=uuid)

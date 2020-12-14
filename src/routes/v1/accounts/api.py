@@ -5,15 +5,15 @@ from .schema import *
 from ..base import Base
 from ....common.auth import assign_user
 from ....common.response import DataResponse
-from ....services import Account, Address, Phone
+from ....services import AccountService, AddressService, PhoneService
 
 
 class AccountsAPI(Base):
     def __init__(self):
         Base.__init__(self)
-        self.account = Account()
-        self.address = Address()
-        self.phone = Phone()
+        self.account = AccountService()
+        self.address = AddressService()
+        self.phone = PhoneService()
 
     @marshal_with(DataResponse.marshallable())
     @assign_user
@@ -74,7 +74,7 @@ class AccountsAPI(Base):
 class AccountsListAPI(Base):
     def __init__(self):
         Base.__init__(self)
-        self.account = Account()
+        self.account = AccountService()
 
     @marshal_with(DataResponse.marshallable())
     def get(self):
@@ -101,7 +101,7 @@ class AccountsListAPI(Base):
 class AccountsListSearchAPI(Base):
     def __init__(self):
         Base.__init__(self)
-        self.account = Account()
+        self.account = AccountService()
 
     @marshal_with(DataResponse.marshallable())
     def get(self):
@@ -125,7 +125,7 @@ class AccountsListSearchAPI(Base):
 class AccountsListBulkAPI(Base):
     def __init__(self):
         Base.__init__(self)
-        self.account = Account()
+        self.account = AccountService()
 
     @marshal_with(DataResponse.marshallable())
     def post(self):
@@ -152,7 +152,7 @@ class AccountsListBulkAPI(Base):
 class AccountsMembershipAPI(Base):
     def __init__(self):
         Base.__init__(self)
-        self.account = Account()
+        self.account = AccountService()
 
     @marshal_with(DataResponse.marshallable())
     def get(self, uuid):
