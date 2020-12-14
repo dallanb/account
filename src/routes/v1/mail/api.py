@@ -5,13 +5,13 @@ from .schema import *
 from ..base import Base
 from ....common.response import DataResponse
 from ....common.auth import assign_user
-from ....services import Account
+from ....services import AccountService
 
 
 class MailAPI(Base):
     def __init__(self):
         Base.__init__(self)
-        self.account = Account()
+        self.account = AccountService()
 
     @marshal_with(DataResponse.marshallable())
     @assign_user

@@ -1,5 +1,5 @@
-from .account import Account
-from .address import Address
-from .avatar import Avatar
-from .base import Base
-from .phone import Phone
+from .account import Account as AccountService
+from .address import Address as AddressService
+from .avatar import Avatar as AvatarService
+from .base import Base as BaseService
+from .phone import Phone as PhoneService

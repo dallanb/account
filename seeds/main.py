@@ -1,9 +1,8 @@
-import random
-import string
 from flask import g
 from flask_seeder import Seeder
-from src.common import generate_uuid, time_now
-from src import services, models
+
+from src import services
+from src.common import generate_uuid
 
 
 # All seeders inherit from Seeder
@@ -15,4 +14,4 @@ class DefaultSeeder(Seeder):
     @staticmethod
     def run():
         g.user = generate_uuid()
-        base = services.Base()
+        base = services.BaseService()

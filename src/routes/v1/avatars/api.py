@@ -5,14 +5,14 @@ from .schema import *
 from ..base import Base
 from ....common.auth import assign_user
 from ....common.response import DataResponse
-from ....services import Avatar, Account
+from ....services import AvatarService, AccountService
 
 
 class AvatarsAPI(Base):
     def __init__(self):
         Base.__init__(self)
-        self.avatar = Avatar()
-        self.account = Account()
+        self.avatar = AvatarService()
+        self.account = AccountService()
 
     @marshal_with(DataResponse.marshallable())
     @assign_user
