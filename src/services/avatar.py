@@ -1,10 +1,11 @@
 import logging
 from http import HTTPStatus
-from .. import app
+
 from .base import Base
-from ..models import Avatar as AvatarModel
+from .. import app
+from ..common.utils import s3_object_name, get_image_data
 from ..libs import S3
-from ..common.utils import s3_object_name, file_extension
+from ..models import Avatar as AvatarModel
 
 
 class Avatar(Base):
@@ -44,14 +45,14 @@ class Avatar(Base):
             self.error(code=HTTPStatus.INTERNAL_SERVER_ERROR)
         return result
 
-    def upload_fileobj(self, file):
+    def upload_fileobj(self, file, filename):
+        file_obj = get_image_data(file=file)
         result = self.s3.upload_obj(
-            file=file,
+            file=file_obj,
             bucket=app.config['S3_BUCKET'],
-            object_name=s3_object_name(file.filename),
+            object_name=s3_object_name(filename),
             extra_args={
                 "ACL": "public-read",
-                "ContentType": file.content_type
             }
         )
         if not result:
@@ -59,5 +60,5 @@ class Avatar(Base):
         return
 
     @staticmethod
-    def generate_s3_filename(filename, membership_uuid):
-        return f"{membership_uuid}.{file_extension(filename)}"
+    def generate_s3_filename(membership_uuid):
+        return f"{membership_uuid}.jpeg"
