@@ -13,8 +13,7 @@ class DumpAccountSchema(Schema):
     membership_uuid = fields.UUID()
     email = fields.String()
     username = fields.String()
-    first_name = fields.String()
-    last_name = fields.String()
+    display_name = fields.String()
     address = fields.Nested(DumpAddressSchema)
     phone = fields.Nested(DumpPhoneSchema)
     avatar = fields.Nested(DumpAvatarSchema)
@@ -44,8 +43,7 @@ class DumpAccountSchema(Schema):
 
 
 class UpdateAccountSchema(Schema):
-    first_name = fields.Str(required=False, missing=None)
-    last_name = fields.Str(required=False, missing=None)
+    display_name = fields.Str(required=False, missing=None)
     address = fields.Nested(UpdateAddressSchema, missing=None, attribute='address', data_key='address')
     phone = fields.Nested(UpdatePhoneSchema, missing=None, attribute='phone', data_key='phone')
 
@@ -59,8 +57,7 @@ class FetchAllAccountSchema(Schema):
     page = fields.Int(required=False, missing=1)
     per_page = fields.Int(required=False, missing=10)
     include = fields.DelimitedList(fields.String(), required=False, missing=[])
-    first_name = fields.String(required=False)
-    last_name = fields.String(required=False)
+    display_name = fields.String(required=False)
 
 
 class SearchAccountSchema(Schema):
