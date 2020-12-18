@@ -19,8 +19,8 @@ class DumpPhoneSchema(Schema):
 
 
 class UpdatePhoneSchema(Schema):
-    number = fields.Str(required=True, attribute='_number')
-    country_code = fields.Str(required=True)
+    number = fields.Str(required=False, attribute='_number')
+    country_code = fields.Str(required=False)
     extension = fields.Str(required=False, missing=None)
 
 
