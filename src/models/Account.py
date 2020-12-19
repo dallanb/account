@@ -1,7 +1,8 @@
 from sqlalchemy_utils import EmailType, UUIDType
-from sqlalchemy.ext.hybrid import hybrid_property
-from .. import db
+from sqlalchemy_utils.types import TSVectorType
+
 from .mixins import BaseMixin
+from .. import db
 from ..common import RoleEnum, StatusEnum
 
 
@@ -10,6 +11,9 @@ class Account(db.Model, BaseMixin):
     email = db.Column(EmailType, unique=True, nullable=False)
     username = db.Column(db.String(15), unique=True, nullable=False)
     display_name = db.Column(db.String(50), nullable=True)
+
+    # Search
+    search_vector = db.Column(TSVectorType('display_name', 'username', weights={'display_name': 'A', 'username': 'B'}))
 
     # FK
     status = db.Column(db.Enum(StatusEnum), db.ForeignKey('status.name'), nullable=False)

@@ -86,37 +86,14 @@ class AccountsListAPI(Base):
                     total_count=accounts.total,
                     page_count=len(accounts.items),
                     page=data['page'],
-                    per_page=data['per_page']),
+                    per_page=data['per_page'],
+                    search=data['search']),
                 'accounts': self.dump(
                     schema=dump_many_schema,
                     instance=accounts.items,
                     params={
                         'include': data['include']
                     }
-                )
-            }
-        )
-
-
-class AccountsListSearchAPI(Base):
-    def __init__(self):
-        Base.__init__(self)
-        self.account = AccountService()
-
-    @marshal_with(DataResponse.marshallable())
-    def get(self):
-        data = self.clean(schema=search_schema, instance=request.args)
-        accounts = self.account.find(**data)
-        return DataResponse(
-            data={
-                '_metadata': self.prepare_metadata(
-                    total_count=accounts.total,
-                    page_count=len(accounts.items),
-                    page=data['page'],
-                    per_page=data['per_page']),
-                'accounts': self.dump(
-                    schema=dump_many_schema,
-                    instance=accounts.items
                 )
             }
         )
