@@ -57,7 +57,7 @@ class FetchAllAccountSchema(Schema):
     page = fields.Int(required=False, missing=1)
     per_page = fields.Int(required=False, missing=10)
     include = fields.DelimitedList(fields.String(), required=False, missing=[])
-    search = fields.String(required=False)
+    search = fields.String(required=False, missing=None)
 
 
 class _BulkAccountWithinSchema(Schema):
