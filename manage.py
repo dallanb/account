@@ -18,8 +18,12 @@ def drop_db():
     db.session.commit()
 
 
-def create_db():
+def configure_db():
     db.configure_mappers()
+    db.session.commit()
+
+
+def create_db():
     db.create_all()
     db.session.commit()
 
@@ -65,6 +69,11 @@ def drop():
 @cli.command("reset")
 def reset():
     reset_db()
+
+
+@cli.command("configure")
+def configure():
+    configure_db()
 
 
 @cli.command("delete_db")
