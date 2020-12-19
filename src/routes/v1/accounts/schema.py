@@ -57,14 +57,7 @@ class FetchAllAccountSchema(Schema):
     page = fields.Int(required=False, missing=1)
     per_page = fields.Int(required=False, missing=10)
     include = fields.DelimitedList(fields.String(), required=False, missing=[])
-    display_name = fields.String(required=False)
-
-
-class SearchAccountSchema(Schema):
-    page = fields.Int(required=False, missing=1)
-    per_page = fields.Int(required=False, missing=10)
-    key = fields.String(attribute='search.key', data_key='key')
-    fields = fields.DelimitedList(fields.String(), attribute='search.fields', data_key='fields')
+    search = fields.String(required=False)
 
 
 class _BulkAccountWithinSchema(Schema):
@@ -88,5 +81,4 @@ dump_many_schema = DumpAccountSchema(many=True)
 update_schema = UpdateAccountSchema()
 fetch_schema = FetchAccountSchema()
 fetch_all_schema = FetchAllAccountSchema()
-search_schema = SearchAccountSchema()
 bulk_schema = BulkAccountSchema()

@@ -1,9 +1,9 @@
 import os
-from flask import g
+
 from flask.cli import FlaskGroup
-from src import app, db, common
+
 from bin import init_account_status, init_account_role
-import src
+from src import app, db, common
 
 cli = FlaskGroup(app)
 
@@ -39,6 +39,11 @@ def initialize_statuses():
 @cli.command("init")
 def init():
     full_init()
+
+
+@cli.command("configure")
+def configure():
+    db.configure_mappers()
 
 
 @cli.command("reset_db")
