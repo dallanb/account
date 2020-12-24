@@ -14,6 +14,7 @@ class DumpAccountSchema(Schema):
     email = fields.String()
     username = fields.String()
     display_name = fields.String()
+    status = fields.String()
     address = fields.Nested(DumpAddressSchema)
     phone = fields.Nested(DumpPhoneSchema)
     avatar = fields.Nested(DumpAvatarSchema)
