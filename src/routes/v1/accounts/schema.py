@@ -1,9 +1,11 @@
 from marshmallow import Schema, post_dump, post_load
+from marshmallow_enum import EnumField
 from webargs import fields
 
 from ..addresses.schema import DumpAddressSchema, UpdateAddressSchema
 from ..avatars.schema import DumpAvatarSchema
 from ..phones.schema import DumpPhoneSchema, UpdatePhoneSchema
+from ....common import StatusEnum
 
 
 class DumpAccountSchema(Schema):
@@ -14,7 +16,7 @@ class DumpAccountSchema(Schema):
     email = fields.String()
     username = fields.String()
     display_name = fields.String()
-    status = fields.String()
+    status = EnumField(StatusEnum)
     address = fields.Nested(DumpAddressSchema)
     phone = fields.Nested(DumpPhoneSchema)
     avatar = fields.Nested(DumpAvatarSchema)
