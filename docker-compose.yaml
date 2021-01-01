@@ -28,7 +28,7 @@ services:
       - ${HUNCHO_DIR}/env/dev/.env.account
     healthcheck:
       test: curl --fail -s account:5000/ping || exit 1
-      interval: 60s
+      interval: 10s
       timeout: 5s
       retries: 5
     ports:
