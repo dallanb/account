@@ -41,5 +41,5 @@ class account_notification:
 
     def update(self, prev_instance, new_instance, args):
         key = 'account_updated'
-        value = {'uuid': str(new_instance.uuid)}
+        value = {'uuid': str(new_instance.uuid), 'user_uuid': str(new_instance.user_uuid)}
         self.service.notify(topic=self.topic, value=value, key=key, )
