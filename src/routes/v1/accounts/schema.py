@@ -11,7 +11,7 @@ class DumpAccountSchema(Schema):
     uuid = fields.UUID()
     ctime = fields.Integer()
     mtime = fields.Integer()
-    membership_uuid = fields.UUID()
+    user_uuid = fields.UUID()
     email = fields.String()
     username = fields.String()
     display_name = fields.String()
