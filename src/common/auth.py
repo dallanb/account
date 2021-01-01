@@ -28,8 +28,8 @@ def assign_user(f):
             db = DB()
 
             consumer_id = request.headers.get('X-Consumer-Custom-ID', None)
-            membership_uuid = Cleaner.is_uuid(consumer_id)
-            accounts = db.find(model=db.get_class_by_tablename('account'), membership_uuid=membership_uuid)
+            user_uuid = Cleaner.is_uuid(consumer_id)
+            accounts = db.find(model=db.get_class_by_tablename('account'), user_uuid=user_uuid)
             if not accounts.total:
                 raise ManualException(code=HTTPStatus.UNAUTHORIZED.value, msg=HTTPStatus.UNAUTHORIZED.phrase)
             kwargs['uuid'] = accounts.items[0].uuid

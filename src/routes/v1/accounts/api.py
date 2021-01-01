@@ -134,7 +134,7 @@ class AccountsMembershipAPI(Base):
     @marshal_with(DataResponse.marshallable())
     def get(self, uuid):
         data = self.clean(schema=fetch_schema, instance=request.args)
-        accounts = self.account.find(membership_uuid=uuid, **data)
+        accounts = self.account.find(user_uuid=uuid, **data)
         if not accounts.total:
             self.throw_error(http_code=self.code.NOT_FOUND)
         return DataResponse(

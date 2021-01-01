@@ -6,7 +6,7 @@ from ..common import RoleEnum, StatusEnum
 
 
 class Account(db.Model, BaseMixin):
-    membership_uuid = db.Column(UUIDType(binary=False), primary_key=True, nullable=False)
+    user_uuid = db.Column(UUIDType(binary=False), primary_key=True, nullable=False)
     email = db.Column(EmailType, unique=True, nullable=False)
     username = db.Column(db.String(15), unique=True, nullable=False)
     display_name = db.Column(db.String(50), nullable=True)
