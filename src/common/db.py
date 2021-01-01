@@ -2,7 +2,6 @@ import collections
 
 import inflect
 from sqlalchemy import inspect, or_, and_
-from sqlalchemy_searchable import search as full_text_search
 
 from .. import db
 from ..common.cleaner import Cleaner
