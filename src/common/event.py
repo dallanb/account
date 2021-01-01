@@ -1,5 +1,3 @@
-from src import app
-
 from ..libs import Producer
 
 
