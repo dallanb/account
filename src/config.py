@@ -14,10 +14,6 @@ class Config(object):
     MAILER_URL = os.getenv("MAILER_URL")
     KAFKA_URL = os.getenv("KAFKA_URL")
     KAFKA_TOPICS = os.getenv("KAFKA_TOPICS").split(",")
-    S3_ACCESS_KEY = os.getenv("S3_ACCESS_KEY")
-    S3_SECRET_KEY = os.getenv("S3_SECRET_KEY")
-    S3_BUCKET = os.getenv("S3_BUCKET")
-    S3_FILEPATH = os.getenv("S3_FILEPATH")
     ALLOWED_EXTENSIONS = os.getenv("ALLOWED_EXTENSIONS").split(',')
     REDIS_CONFIG = {
         'CACHE_TYPE': 'redis',
