@@ -36,7 +36,8 @@ class account_notification:
     def create(self, new_instance):
         key = 'account_created'
         value = {'uuid': str(new_instance.uuid), 'user_uuid': str(new_instance.user_uuid), 'email': new_instance.email,
-                 'username': new_instance.username, 'display_name': new_instance.display_name}
+                 'username': new_instance.username, 'display_name': new_instance.display_name,
+                 'country': new_instance.country.code}
         self.service.notify(topic=self.topic, value=value, key=key, )
 
     def update(self, prev_instance, new_instance, args):
