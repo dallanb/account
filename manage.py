@@ -1,19 +1,35 @@
 import os
-from flask import g
+
 from flask.cli import FlaskGroup
-from src import app, db, common
+
 from bin import init_account_status, init_account_role
-import src
+from src import app, db, common
 
 cli = FlaskGroup(app)
 
 
-def full_init():
-    initialize_statuses()
+def full_load():
+    load_statuses()
     os.system('flask seed run')
 
 
+def init_db():
+    db.drop_all()
+    db.create_all()
+    db.session.commit()
+
+
+def drop_db():
+    db.drop_all()
+    db.session.commit()
+
+
 def create_db():
+    db.create_all()
+    db.session.commit()
+
+
+def reset_db():
     db.drop_all()
     db.create_all()
     db.session.commit()
@@ -30,7 +46,7 @@ def clear_cache():
     common.cache.clear()
 
 
-def initialize_statuses():
+def load_statuses():
     init_account_status(status_enums=common.StatusEnum)
     init_account_role(role_enums=common.RoleEnum)
     return
@@ -38,16 +54,31 @@ def initialize_statuses():
 
 @cli.command("init")
 def init():
-    full_init()
+    init_db()
 
 
-@cli.command("reset_db")
-def reset_db():
+@cli.command("load")
+def load():
+    full_load()
+
+
+@cli.command("create")
+def create():
     create_db()
 
 
-@cli.command("delete_db")
-def delete_db():
+@cli.command("drop")
+def drop():
+    drop_db()
+
+
+@cli.command("reset")
+def reset():
+    reset_db()
+
+
+@cli.command("delete")
+def delete():
     clear_db()
 
 
@@ -56,9 +87,9 @@ def flush_cache():
     clear_cache()
 
 
-@cli.command("init_status")
-def init_status():
-    initialize_statuses()
+@cli.command("load_status")
+def load_status():
+    load_statuses()
 
 
 if __name__ == "__main__":

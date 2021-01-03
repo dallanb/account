@@ -1,4 +1,3 @@
-from .Avatar import Avatar
 from .Account import Account
 from .Address import Address
 from .Phone import Phone
