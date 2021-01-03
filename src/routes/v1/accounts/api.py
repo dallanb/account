@@ -86,8 +86,7 @@ class AccountsListAPI(Base):
                     total_count=accounts.total,
                     page_count=len(accounts.items),
                     page=data['page'],
-                    per_page=data['per_page'],
-                    search=data['search']),
+                    per_page=data['per_page']),
                 'accounts': self.dump(
                     schema=dump_many_schema,
                     instance=accounts.items,
