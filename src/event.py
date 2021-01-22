@@ -10,5 +10,6 @@ def new_event_listener(event):
     if topic == 'auth':
         try:
             Auth().handle_event(key=key, data=data)
-        except Exception:
+        except Exception as ex:
+            logging.error(ex)
             logging.info('Auth event err')
