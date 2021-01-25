@@ -14,5 +14,11 @@ class Auth:
             self.logger.info('auth created')
             address = self.address_service.create(country=data['country'])
             _ = self.account_service.create(user_uuid=data['uuid'], username=data['username'],
-                                            email=data['email'], display_name=data['display_name'], status='active',
+                                            email=data['email'], display_name=data['display_name'],
+                                            status=data['status'],
                                             role='member', address=address)
+        elif key == 'auth_updated':
+            self.logger.info('auth updated')
+            accounts = self.account_service.find(user_uuid=data['uuid'])
+            if accounts.total and not accounts.items[0].status.name == data['status']:
+                self.account_service.apply(instance=accounts.items[0], status=data['status'])

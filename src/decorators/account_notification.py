@@ -37,10 +37,11 @@ class account_notification:
         key = 'account_created'
         value = {'uuid': str(new_instance.uuid), 'user_uuid': str(new_instance.user_uuid), 'email': new_instance.email,
                  'username': new_instance.username, 'display_name': new_instance.display_name,
-                 'country': new_instance.address.country.code}
+                 'country': new_instance.address.country.code, 'status': new_instance.status.name}
         self.service.notify(topic=self.topic, value=value, key=key, )
 
     def update(self, prev_instance, new_instance, args):
         key = 'account_updated'
-        value = {'uuid': str(new_instance.uuid), 'user_uuid': str(new_instance.user_uuid)}
+        value = {'uuid': str(new_instance.uuid), 'user_uuid': str(new_instance.user_uuid),
+                 'status': new_instance.status.name}
         self.service.notify(topic=self.topic, value=value, key=key, )
