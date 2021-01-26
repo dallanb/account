@@ -34,13 +34,12 @@ class account_notification:
         self._service = service
 
     def create(self, new_instance):
-        key = 'account_created'
-        value = {'uuid': str(new_instance.uuid), 'user_uuid': str(new_instance.user_uuid), 'email': new_instance.email,
-                 'username': new_instance.username, 'display_name': new_instance.display_name,
-                 'country': new_instance.address.country.code}
+        key = f'account_{new_instance.status.name}'
+        value = {'uuid': str(new_instance.uuid)}
         self.service.notify(topic=self.topic, value=value, key=key, )
 
     def update(self, prev_instance, new_instance, args):
-        key = 'account_updated'
-        value = {'uuid': str(new_instance.uuid), 'user_uuid': str(new_instance.user_uuid)}
-        self.service.notify(topic=self.topic, value=value, key=key, )
+        if prev_instance and prev_instance.get('status') and prev_instance['status'].name != new_instance.status.name:
+            key = f'account_{new_instance.status.name}'
+            value = {'uuid': str(new_instance.uuid)}
+            self.service.notify(topic=self.topic, value=value, key=key, )
