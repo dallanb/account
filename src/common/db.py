@@ -113,7 +113,7 @@ class DB:
     def _generate_nested_filter(self, nested):
         nested_filter = []
         for k, v in nested.items():
-            nested_class = self._get_class_by_tablename(k)
+            nested_class = self.get_class_by_tablename(k)
             for nested_k, nested_v in v.items():
                 nested_filter.append(
                     (
