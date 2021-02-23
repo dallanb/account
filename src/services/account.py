@@ -31,12 +31,6 @@ class Account(Base):
         account = self._assign_attr(instance=instance, attr=kwargs)
         return self._save(instance=account)
 
-    def destroy(self, uuid, ):
-        accounts = self.find(uuid=uuid)
-        if not accounts.total:
-            self.error(code=HTTPStatus.NOT_FOUND)
-        return self._destroy(instance=accounts.items[0])
-
     def generate_mail(self, uuid, type):
         accounts = self.find(uuid=uuid)
         if not accounts.total:
