@@ -26,9 +26,3 @@ class Address(Base):
     def apply(self, instance, **kwargs):
         address = self._assign_attr(instance=instance, attr=kwargs)
         return self._save(instance=address)
-
-    def destroy(self, uuid, ):
-        addresses = self.find(uuid=uuid)
-        if not addresses.total:
-            self.error(code=HTTPStatus.NOT_FOUND)
-        return self._destroy(instance=addresses.items[0])

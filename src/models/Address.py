@@ -12,7 +12,7 @@ class Address(db.Model, BaseMixin):
     postal_code = db.Column(db.String, nullable=True)
 
     # Relationship
-    account = db.relationship("Account", back_populates="address", uselist=False, lazy="noload")
+    account = db.relationship("Account", back_populates="address", uselist=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
