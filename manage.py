@@ -15,12 +15,18 @@ def full_load():
 
 def init_db():
     db.drop_all()
+    db.configure_mappers()
     db.create_all()
     db.session.commit()
 
 
 def drop_db():
     db.drop_all()
+    db.session.commit()
+
+
+def configure_db():
+    db.configure_mappers()
     db.session.commit()
 
 
@@ -75,6 +81,11 @@ def drop():
 @cli.command("reset")
 def reset():
     reset_db()
+
+
+@cli.command("configure")
+def configure():
+    configure_db()
 
 
 @cli.command("delete")
