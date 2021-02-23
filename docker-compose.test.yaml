@@ -44,6 +44,14 @@ services:
       - zookeeper
     networks:
       - test-net
+  zookeeper:
+    container_name: zookeeper
+    image: wurstmeister/zookeeper:latest
+    restart: on-failure
+    env_file:
+      - env/test/.env.zookeeper
+    networks:
+      - test-net
 volumes:
   db_data:
 networks:
