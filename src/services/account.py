@@ -13,12 +13,12 @@ class Account(Base):
         self.account_model = AccountModel
 
     def find(self, **kwargs):
-        return Base.find(self, model=self.account_model, **kwargs)
+        return self._find(model=self.account_model, **kwargs)
 
     @account_notification(operation='create')
     def create(self, **kwargs):
-        account = self.init(model=self.account_model, **kwargs)
-        return self.save(instance=account)
+        account = self._init(model=self.account_model, **kwargs)
+        return self._save(instance=account)
 
     def update(self, uuid, **kwargs):
         accounts = self.find(uuid=uuid)
@@ -28,14 +28,14 @@ class Account(Base):
 
     @account_notification(operation='update')
     def apply(self, instance, **kwargs):
-        account = self.assign_attr(instance=instance, attr=kwargs)
-        return self.save(instance=account)
+        account = self._assign_attr(instance=instance, attr=kwargs)
+        return self._save(instance=account)
 
     def destroy(self, uuid, ):
         accounts = self.find(uuid=uuid)
         if not accounts.total:
             self.error(code=HTTPStatus.NOT_FOUND)
-        return Base.destroy(self, instance=accounts.items[0])
+        return self._destroy(instance=accounts.items[0])
 
     def generate_mail(self, uuid, type):
         accounts = self.find(uuid=uuid)
