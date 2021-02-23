@@ -31,20 +31,20 @@ def test_auth_auth_created_sync(reset_db, pause_notification):
     assert str(account.user_uuid) == value['uuid']
 
 
-def test_auth_auth_updated_sync(reset_db, pause_notification):
+def test_auth_auth_updated_sync(reset_db, pause_notification, seed_account):
     """
     GIVEN 1 account instance and 1 address in the database
     WHEN directly calling event auth handle_event auth_updated
     THEN it should add 1 account instance and 1 address instance to the database
     """
-    key = 'auth_created'
+    key = 'auth_updated'
     value = {
         'username': pytest.username,
         'email': pytest.email,
-        'uuid': str(generate_uuid()),
+        'uuid': str(pytest.user_uuid),
         'display_name': pytest.display_name,
         'country': pytest.country,
-        'status': 'pending'
+        'status': 'active'
     }
 
     events.Auth().handle_event(key=key, data=value)
@@ -53,5 +53,4 @@ def test_auth_auth_updated_sync(reset_db, pause_notification):
 
     assert accounts.total == 1
     account = accounts.items[0]
-    assert str(account.user_uuid) == value['uuid']
-
+    assert account.status.name == value['status']
