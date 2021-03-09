@@ -4,6 +4,7 @@ from webargs import fields
 
 class CountryUpdatedSchema(Schema):
     uuid = fields.UUID(missing=None, attribute='account.uuid')
+    user_uuid = fields.UUID(missing=None, attribute='account.user_uuid')
     country = fields.String()
 
     @pre_dump
