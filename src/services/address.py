@@ -1,5 +1,6 @@
 import logging
 from .base import Base
+from ..decorators import address_notification
 from ..models import Address as AddressModel
 from http import HTTPStatus
 
@@ -23,6 +24,7 @@ class Address(Base):
             self.error(code=HTTPStatus.NOT_FOUND)
         return self.apply(instance=addresses.items[0], **kwargs)
 
+    @address_notification(operation='update')
     def apply(self, instance, **kwargs):
         address = self._assign_attr(instance=instance, attr=kwargs)
         return self._save(instance=address)
