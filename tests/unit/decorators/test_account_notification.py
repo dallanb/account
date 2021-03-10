@@ -1,8 +1,8 @@
-import pytest
 import time
 
+import pytest
+
 from src import services
-from src.common import time_now
 
 
 def test_account_notification_account_active(reset_db, kafka_conn_last_msg):
@@ -49,3 +49,14 @@ def test_account_notification_account_active_update(reset_db, kafka_conn_last_ms
     assert msg.key == 'account_inactive'
     assert msg.value is not None
     assert msg.value['uuid'] == str(pytest.account.uuid)
+
+
+def test_account_notification_display_name_updated(reset_db, kafka_conn_last_msg, seed_account):
+    pytest.account = services.AccountService().update(uuid=pytest.account.uuid, display_name='Baby D')
+    time.sleep(0.2)
+    msg = kafka_conn_last_msg('accounts')
+    assert msg.key is not None
+    assert msg.key == 'display_name_updated'
+    assert msg.value is not None
+    assert msg.value['uuid'] == str(pytest.account.uuid)
+    assert msg.value['display_name'] == 'Baby D'

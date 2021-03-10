@@ -1,6 +1,6 @@
 from functools import wraps
 
-from src.notifications import account_active, account_pending, account_inactive
+from src.notifications import account_active, account_pending, account_inactive, display_name_updated
 
 
 class account_notification:
@@ -42,3 +42,6 @@ class account_notification:
                 account_inactive.from_data(account=new_instance).notify()
             if new_instance.status.name == 'pending':
                 account_pending.from_data(account=new_instance).notify()
+        if prev_instance and prev_instance.get('display_name') and prev_instance[
+            'display_name'] != new_instance.display_name:
+            display_name_updated.from_data(account=new_instance).notify()
