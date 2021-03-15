@@ -20,8 +20,8 @@ class Account(db.Model, BaseMixin):
     # Relationship
     account_status = db.relationship("Status")
     account_role = db.relationship("Role")
-    address = db.relationship("Address", back_populates="account")
-    phone = db.relationship("Phone", back_populates="account")
+    address = db.relationship("Address", back_populates="account", lazy='joined')
+    phone = db.relationship("Phone", back_populates="account", lazy='joined')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

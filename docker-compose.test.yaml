@@ -3,7 +3,7 @@ version: "3.2"
 services:
   app:
     container_name: app
-    image: dallanbhatti/app:test
+    image: dallanbhatti/account:test
     restart: on-failure
     env_file:
       - env/test/.env.app
@@ -42,6 +42,14 @@ services:
       - env/test/.env.kafka
     depends_on:
       - zookeeper
+    networks:
+      - test-net
+  zookeeper:
+    container_name: zookeeper
+    image: wurstmeister/zookeeper:latest
+    restart: on-failure
+    env_file:
+      - env/test/.env.zookeeper
     networks:
       - test-net
 volumes:

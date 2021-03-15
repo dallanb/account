@@ -12,11 +12,11 @@ class Phone(Base):
         self.phone_model = PhoneModel
 
     def find(self, **kwargs):
-        return Base.find(self, model=self.phone_model, **kwargs)
+        return self._find(model=self.phone_model, **kwargs)
 
     def create(self, **kwargs):
-        phone = self.init(model=self.phone_model, **kwargs)
-        return self.save(instance=phone)
+        phone = self._init(model=self.phone_model, **kwargs)
+        return self._save(instance=phone)
 
     def update(self, uuid, **kwargs):
         phones = self.find(uuid=uuid)
@@ -25,14 +25,14 @@ class Phone(Base):
         return self.apply(instance=phones.items[0], **kwargs)
 
     def apply(self, instance, **kwargs):
-        phone = self.assign_attr(instance=instance, attr=kwargs)
-        return self.save(instance=phone)
+        phone = self._assign_attr(instance=instance, attr=kwargs)
+        return self._save(instance=phone)
 
     def destroy(self, uuid):
         phones = self.find(uuid=uuid)
         if not phones.total:
             self.error(code=HTTPStatus.NOT_FOUND)
-        return Base.destroy(self, instance=phones.items[0])
+        return self._destroy(instance=phones.items[0])
 
     @staticmethod
     def format(attr):

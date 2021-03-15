@@ -60,9 +60,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
-      - env/.env.kafka
+      - env/.env.account_kafka
     depends_on:
-      - zookeeper
+      - account_zookeeper
     networks:
       - app-net
   account_zookeeper:
@@ -70,7 +70,7 @@ services:
     image: wurstmeister/zookeeper:latest
     restart: on-failure
     env_file:
-      - env/.env.zookeeper
+      - env/.env.account_zookeeper
     networks:
       - app-net
 volumes:

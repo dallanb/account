@@ -39,9 +39,9 @@ class DumpAccountSchema(Schema):
 
 
 class UpdateAccountSchema(Schema):
-    display_name = fields.Str(required=False, missing=None)
-    address = fields.Nested(UpdateAddressSchema, missing=None, attribute='address', data_key='address')
-    phone = fields.Nested(UpdatePhoneSchema, missing=None, attribute='phone', data_key='phone')
+    display_name = fields.Str(required=False)
+    address = fields.Nested(UpdateAddressSchema, attribute='address', data_key='address')
+    phone = fields.Nested(UpdatePhoneSchema, attribute='phone', data_key='phone')
 
 
 class FetchAccountSchema(Schema):
