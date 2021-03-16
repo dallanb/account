@@ -1,23 +1,22 @@
 from functools import wraps
 
+from src.notifications import account_active, account_pending, account_inactive, display_name_updated
+
 
 class account_notification:
     def __init__(self, operation):
         self.operation = operation
-        self.topic = 'accounts'
-        self._service = None
 
     def __call__(self, f):
         @wraps(f)
         def wrap(*args, **kwargs):
-            self.service = args[0]
             prev_instance = {**kwargs.get('instance').__dict__} if kwargs.get('instance') else None
             new_instance = f(*args, **kwargs)
 
             if self.operation == 'create':
                 self.create(new_instance=new_instance)
             if self.operation == 'update':
-                self.update(prev_instance=prev_instance, new_instance=new_instance, args=kwargs)
+                self.update(prev_instance=prev_instance, new_instance=new_instance)
 
             return new_instance
 
@@ -25,21 +24,24 @@ class account_notification:
         wrap.__name__ = f.__name__
         return wrap
 
-    @property
-    def service(self):
-        return self._service
+    @staticmethod
+    def create(new_instance):
+        if new_instance.status.name == 'active':
+            account_active.from_data(account=new_instance).notify()
+        if new_instance.status.name == 'inactive':
+            account_inactive.from_data(account=new_instance).notify()
+        if new_instance.status.name == 'pending':
+            account_pending.from_data(account=new_instance).notify()
 
-    @service.setter
-    def service(self, service):
-        self._service = service
-
-    def create(self, new_instance):
-        key = f'account_{new_instance.status.name}'
-        value = {'uuid': str(new_instance.uuid)}
-        self.service.notify(topic=self.topic, value=value, key=key, )
-
-    def update(self, prev_instance, new_instance, args):
+    @staticmethod
+    def update(prev_instance, new_instance):
         if prev_instance and prev_instance.get('status') and prev_instance['status'].name != new_instance.status.name:
-            key = f'account_{new_instance.status.name}'
-            value = {'uuid': str(new_instance.uuid)}
-            self.service.notify(topic=self.topic, value=value, key=key, )
+            if new_instance.status.name == 'active':
+                account_active.from_data(account=new_instance).notify()
+            if new_instance.status.name == 'inactive':
+                account_inactive.from_data(account=new_instance).notify()
+            if new_instance.status.name == 'pending':
+                account_pending.from_data(account=new_instance).notify()
+        if prev_instance and prev_instance.get('display_name') and prev_instance[
+            'display_name'] != new_instance.display_name:
+            display_name_updated.from_data(account=new_instance).notify()

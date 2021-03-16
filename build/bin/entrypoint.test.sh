@@ -4,8 +4,8 @@
 
 pip install -e .
 
-if [ "$DATABASE" = "account" ]; then
-  echo "Waiting for account..."
+if [ "$DATABASE" = "app" ]; then
+  echo "Waiting for app..."
 
   while ! nc -z $SQL_HOST $SQL_PORT; do
     sleep 0.1
@@ -14,16 +14,12 @@ if [ "$DATABASE" = "account" ]; then
   echo "PostgreSQL started"
 fi
 
-if [ ! -d "migrations/test/versions" ]; then
-  echo "Directory migrations/test/versions does not exist."
-  flask db init --directory=migrations/test
-  sed -i '/import sqlalchemy as sa/a import sqlalchemy_utils' migrations/test/script.py.mako
-  flask db migrate --directory=migrations/test
-fi
+while ! nc -z zookeeper 2181; do
+  sleep 0.1
+done
+echo "Kafka started"
 
-flask db upgrade --directory=migrations/test
+manage init
+manage load
 
-#manage delete_db
-#manage init
-
-manage run -h 0.0.0.0
+gunicorn --bind 0.0.0.0:5000 manage:app

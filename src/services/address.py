@@ -1,5 +1,6 @@
 import logging
 from .base import Base
+from ..decorators import address_notification
 from ..models import Address as AddressModel
 from http import HTTPStatus
 
@@ -11,11 +12,11 @@ class Address(Base):
         self.address_model = AddressModel
 
     def find(self, **kwargs):
-        return Base.find(self, model=self.address_model, **kwargs)
+        return self._find(model=self.address_model, **kwargs)
 
     def create(self, **kwargs):
-        address = self.init(model=self.address_model, **kwargs)
-        return self.save(instance=address)
+        address = self._init(model=self.address_model, **kwargs)
+        return self._save(instance=address)
 
     def update(self, uuid, **kwargs):
         addresses = self.find(uuid=uuid)
@@ -23,12 +24,7 @@ class Address(Base):
             self.error(code=HTTPStatus.NOT_FOUND)
         return self.apply(instance=addresses.items[0], **kwargs)
 
+    @address_notification(operation='update')
     def apply(self, instance, **kwargs):
-        address = self.assign_attr(instance=instance, attr=kwargs)
-        return self.save(instance=address)
-
-    def destroy(self, uuid, ):
-        addresses = self.find(uuid=uuid)
-        if not addresses.total:
-            self.error(code=HTTPStatus.NOT_FOUND)
-        return Base.destroy(self, instance=addresses.items[0])
+        address = self._assign_attr(instance=instance, attr=kwargs)
+        return self._save(instance=address)

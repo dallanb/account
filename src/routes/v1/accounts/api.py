@@ -45,14 +45,14 @@ class AccountsAPI(Base):
 
         account = accounts.items[0]
 
-        address_attr = data.pop('address')
+        address_attr = data.pop('address', None)
         if address_attr:
             if account.address:
                 account.address = self.address.apply(instance=account.address, **address_attr)
             else:
                 account.address = self.address.create(**address_attr)
 
-        phone_attr = data.pop('phone')
+        phone_attr = data.pop('phone', None)
         if phone_attr:
             phone = self.phone.format(attr=phone_attr)
             if account.phone:

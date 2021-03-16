@@ -1,0 +1,17 @@
+FLASK_APP=src/__init__.py
+FLASK_ENV=production
+TESTING=True
+PROPAGATE_EXCEPTIONS=None
+DATABASE_URL=postgresql://app:password@db:5432/app
+SQL_HOST=db
+SQL_PORT=5432
+DATABASE=app
+CACHE_HOST=cache
+CACHE_PORT=6379
+SECRET_KEY=dallanbhatti
+KONG_URL=http://192.168.0.200:8001
+MAILER_URL=https://dmailer.techtapir.com
+KAFKA_URL=192.168.0.125:9092
+KAFKA_TOPICS=auth
+S3_FILEPATH=app/avatars/
+ALLOWED_EXTENSIONS=png,jpg,jpeg
