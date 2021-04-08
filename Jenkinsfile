@@ -65,11 +65,9 @@ pipeline {
                 slackSend (color: '#0000FF', message: "STARTED: Deploying Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
                 script {
 //                     if (dockerImage) {
-//                     docker.withRegistry( '', registryCredential ) {
-                    sh "docker buildx inspect"
-                    sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --cache-from $dockerImageName --platform linux/amd64 --load ."
-                    sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --cache-from $dockerImageName --platform linux/amd64 --push ."
-//                     }
+                    docker.withRegistry( '', registryCredential ) {
+                        sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --cache-from $dockerImageName --platform linux/amd64 --push ."
+                    }
 //                     }
                 }
             }
