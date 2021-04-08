@@ -67,7 +67,6 @@ pipeline {
                 script {
                     if (dockerImage) {
                         docker.withRegistry( '', registryCredential ) {
-                            dockerImage.push()
 //                             dockerImage.push()
                             sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --platform linux/amd64,linux/arm64 --push ."
                         }
