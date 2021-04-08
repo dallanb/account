@@ -21,7 +21,6 @@ pipeline {
                         }
 //                         dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME --cache-from $dockerImageName .")
                         dockerImage = true
-                        echo "${docker buildx ls}"
                         sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --cache-from $dockerImageName --platform linux/amd64 --load ."
                     }
                 }
