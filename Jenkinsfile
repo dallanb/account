@@ -7,11 +7,11 @@ pipeline {
     }
     agent any
     stages {
-//         stage('Build') {
-//             steps {
-//                 slackSend (color: '#0000FF', message: "STARTED: Building Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
-//                 script {
-//                     dockerImageName = registry + ":$BRANCH_NAME"
+        stage('Build') {
+            steps {
+                slackSend (color: '#0000FF', message: "STARTED: Building Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
+                script {
+                    dockerImageName = registry + ":$BRANCH_NAME"
 //                     dockerImage = ''
 //                     if (env.BRANCH_NAME == 'qaw') {
 //                         try {
@@ -22,9 +22,9 @@ pipeline {
 //                         dockerImage = true
 //                         sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --cache-from $dockerImageName --platform linux/amd64 --load ."
 //                     }
-//                 }
-//             }
-//         }
+                }
+            }
+        }
 //         stage('Test') {
 //             steps {
 //                 slackSend (color: '#0000FF', message: "Testing Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
