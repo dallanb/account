@@ -19,7 +19,6 @@ pipeline {
                         } catch (Exception e) {
                             echo 'This image does not exist'
                         }
-//                         dockerImage = docker.build(dockerImageName, "-f build/Dockerfile.$BRANCH_NAME --cache-from $dockerImageName .")
                         dockerImage = true
                         sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --cache-from $dockerImageName --platform linux/amd64 --load ."
                     }
@@ -67,7 +66,6 @@ pipeline {
                 script {
                     if (dockerImage) {
                         docker.withRegistry( '', registryCredential ) {
-//                             dockerImage.push()
                             sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --platform linux/amd64,linux/arm64 --push ."
                         }
                     }
