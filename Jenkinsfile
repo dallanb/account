@@ -20,9 +20,8 @@ pipeline {
                             echo 'This image does not exist'
                         }
                         dockerImage = true
-                        sh "docker buildx create --use"
-                        sh "docker buildx ls"
-                        sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --cache-from $dockerImageName --platform linux/amd64,linux/arm64 --load ."
+                        sh "docker buildx use mybuilder"
+                        sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --cache-from $dockerImageName --platform linux/amd64 --load ."
                     }
                 }
             }
