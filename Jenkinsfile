@@ -66,23 +66,23 @@ pipeline {
                 script {
 //                     if (dockerImage) {
                     docker.withRegistry( '', registryCredential ) {
-//                         sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --platform linux/amd64,linux/arm64 --push ."
                         sh "docker buildx inspect"
+                        sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --platform linux/amd64,linux/arm64 --push ."
                     }
 //                     }
                 }
             }
         }
-        stage('Clean') {
-            steps {
-                slackSend (color: '#0000FF', message: "STARTED: Cleaning Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
-                script {
-                    if (dockerImage) {
-                        sh "docker image prune -f"
-                    }
-                }
-            }
-        }
+//         stage('Clean') {
+//             steps {
+//                 slackSend (color: '#0000FF', message: "STARTED: Cleaning Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
+//                 script {
+//                     if (dockerImage) {
+//                         sh "docker image prune -f"
+//                     }
+//                 }
+//             }
+//         }
 //         stage('Recreate') {
 //             steps {
 //                 slackSend (color: '#0000FF', message: "STARTED: Recreating Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
