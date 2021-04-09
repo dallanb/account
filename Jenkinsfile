@@ -8,49 +8,49 @@ pipeline {
     agent any
     stages {
         stage('Build') {
+            when {
+                expression { env.BRANCH_NAME == 'qaw' || env.BRANCH_NAME == 'prod'}
+            }
             steps {
                 slackSend (color: '#0000FF', message: "STARTED: Building Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
                 script {
                     dockerImageName = registry + ":$BRANCH_NAME"
-                    if (env.BRANCH_NAME == 'qaw' || env.BRANCH_NAME == 'prod') {
-                        dockerImage = true
-                        try {
-                            docker.image(dockerImageName).pull()
-                        } catch (Exception e) {
-                            echo 'This image does not exist'
-                        }
-//                         sh "docker buildx create --name jenkinsbuilder"
-                        sh "docker buildx use jenkinsbuilder"
-                        sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --cache-from $dockerImageName --platform linux/amd64 --load ."
+                    dockerImage = true
+                    try {
+                        docker.image(dockerImageName).pull()
+                    } catch (Exception e) {
+                        echo 'This image does not exist'
                     }
+//                     sh "docker buildx create --name jenkinsbuilder"
+                    sh "docker buildx use jenkinsbuilder"
+                    sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --cache-from $dockerImageName --platform linux/amd64 --load ."
                 }
             }
         }
         stage('Test') {
+            when {
+                expression { env.BRANCH_NAME == 'qaw'}
+            }
             steps {
                 slackSend (color: '#0000FF', message: "Testing Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
                 script {
-                    if (env.BRANCH_NAME == 'qaw') {
-                        try {
-                            sh "docker build -f build/Dockerfile.test --cache-from $dockerImageName -t $registry:test ."
-                            sh "docker-compose -f docker-compose.test.yaml up -d"
-                            sh "bash bin/test.sh"
-                            sh "docker cp app:/home/app/tests.xml ."
-                            sh "docker cp app:/home/app/coverage.xml ."
-                        } finally {
-                            sh "docker-compose -f docker-compose.test.yaml down -v"
-                            sh "docker image rm $registry:test"
-                        }
+                    try {
+                        sh "docker build -f build/Dockerfile.test --cache-from $dockerImageName -t $registry:test ."
+                        sh "docker-compose -f docker-compose.test.yaml up -d"
+                        sh "bash bin/test.sh"
+                        sh "docker cp app:/home/app/tests.xml ."
+                        sh "docker cp app:/home/app/coverage.xml ."
+                    } finally {
+                        sh "docker-compose -f docker-compose.test.yaml down -v"
+                        sh "docker image rm $registry:test"
                     }
                 }
             }
             post {
                 always {
                     script {
-                        if (env.BRANCH_NAME == 'qaw') {
-                            testSummary = junit testResults: 'tests.xml'
-                            cobertura coberturaReportFile: 'coverage.xml', enableNewApi: true
-                        }
+                        testSummary = junit testResults: 'tests.xml'
+                        cobertura coberturaReportFile: 'coverage.xml', enableNewApi: true
                     }
                     slackSend (
                        color: '#FFFF00',
@@ -64,6 +64,9 @@ pipeline {
             }
         }
         stage('Deploy') {
+            when {
+                expression { env.BRANCH_NAME == 'qaw' || env.BRANCH_NAME == 'prod'}
+            }
             steps {
                 slackSend (color: '#0000FF', message: "STARTED: Deploying Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
                 script {
@@ -79,6 +82,9 @@ pipeline {
             }
         }
         stage('Clean') {
+            when {
+                expression { env.BRANCH_NAME == 'qaw' || env.BRANCH_NAME == 'prod'}
+            }
             steps {
                 slackSend (color: '#0000FF', message: "STARTED: Cleaning Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
                 script {
