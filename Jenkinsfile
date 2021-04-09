@@ -12,9 +12,8 @@ pipeline {
                 slackSend (color: '#0000FF', message: "STARTED: Building Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
                 script {
                     dockerImageName = registry + ":$BRANCH_NAME"
-//                     dockerImage = ''
-                    dockerImage = true
-                    if (env.BRANCH_NAME == 'qaw') {
+                    if (env.BRANCH_NAME == 'qaw' || env.BRANCH_NAME == 'prod') {
+                        dockerImage = true
                         try {
                             docker.image(dockerImageName).pull()
                         } catch (Exception e) {
@@ -48,8 +47,10 @@ pipeline {
             post {
                 always {
                     script {
-                        testSummary = junit testResults: 'tests.xml'
-                        cobertura coberturaReportFile: 'coverage.xml', enableNewApi: true
+                        if (env.BRANCH_NAME == 'qaw') {
+                            testSummary = junit testResults: 'tests.xml'
+                            cobertura coberturaReportFile: 'coverage.xml', enableNewApi: true
+                        }
                     }
                     slackSend (
                        color: '#FFFF00',
