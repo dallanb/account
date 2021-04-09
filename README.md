@@ -11,4 +11,4 @@ ACCOUNT Microservice
 [Entity Relationship Diagram](https://drive.google.com/file/d/15zUbySyCV1yHBmy8DYWbuiOiG_vj3ztG/view?usp=sharing)
 
 #### Events
-[Events Diagram](https://drive.google.com/file/d/1QoUbRziPqTFjOusf53pYn2tJgVLTY2Bi/view?usp=sharing)
+[Events Diagram](https://drive.google.com/file/d/1QoUbRziPqTFjOusf53pYn2tJgVLTY2Bi/view?usp=sharing) 
