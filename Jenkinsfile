@@ -12,6 +12,7 @@ pipeline {
                 slackSend (color: '#0000FF', message: "STARTED: Building Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ")
                 script {
                     dockerImageName = registry + ":$BRANCH_NAME"
+                    dockerImage = true
 //                     dockerImage = ''
 //                     if (env.BRANCH_NAME == 'qaw') {
 //                         try {
@@ -19,7 +20,6 @@ pipeline {
 //                         } catch (Exception e) {
 //                             echo 'This image does not exist'
 //                         }
-//                         dockerImage = true
 // //                         sh "docker buildx create --name jenkinsbuilder"
 //                         sh "docker buildx use jenkinsbuilder"
 //                         sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --cache-from $dockerImageName --platform linux/amd64 --load ."
