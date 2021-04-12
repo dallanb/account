@@ -13,14 +13,14 @@ if [ "$DATABASE" = "auth" ]; then
 fi
 
 
-if [ ! -d "migrations/account/versions" ]; then
-  echo "Directory migrations/account/versions does not exist."
-  flask db init --directory=migrations/account
-  sed -i '/import sqlalchemy as sa/a import sqlalchemy_utils' migrations/account/script.py.mako
+if [ ! -d "migrations/versions" ]; then
+  echo "Directory migrations/versions does not exist."
+  flask db init --directory=migrations
+  sed -i '/import sqlalchemy as sa/a import sqlalchemy_utils' migrations/script.py.mako
 fi
 
-flask db migrate --directory=migrations/account
-flask db upgrade --directory=migrations/account
+flask db migrate --directory=migrations
+flask db upgrade --directory=migrations
 
 pip install -e .
 
