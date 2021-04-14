@@ -12,16 +12,26 @@ if [ "$DATABASE" = "auth" ]; then
   echo "PostgreSQL started"
 fi
 
+pip install -e .
 
 if [ ! -d "migrations/versions" ]; then
   echo "Directory migrations/versions does not exist."
-  flask db init --directory=migrations
-  sed -i '/import sqlalchemy as sa/a import sqlalchemy_utils' migrations/script.py.mako
+  init=$(flask db init --directory=migrations)
+  case $init in
+    *"Error: Directory migrations already exists and is not empty"*)
+      echo "Migrations handled elsewhere"
+      ;;
+    *)
+      sed -i '/import sqlalchemy as sa/a import sqlalchemy_utils' migrations/script.py.mako
+      flask db migrate --directory=migrations
+      flask db upgrade --directory=migrations
+      manage init
+      manage load
+      ;;
+  esac
+else
+  flask db migrate --directory=migrations
+  flask db upgrade --directory=migrations
 fi
-
-flask db migrate --directory=migrations
-flask db upgrade --directory=migrations
-
-pip install -e .
 
 gunicorn --bind 0.0.0.0:5000 manage:app
