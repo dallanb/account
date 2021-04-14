@@ -12,6 +12,7 @@ class Config(object):
     SECRET_KEY = os.getenv("SECRET_KEY")
     KAFKA_URL = os.getenv("KAFKA_URL")
     KAFKA_TOPICS = os.getenv("KAFKA_TOPICS").split(",")
+    KAFKA_GROUP_ID = os.getenv("KAFKA_GROUP_ID")
     ALLOWED_EXTENSIONS = os.getenv("ALLOWED_EXTENSIONS").split(',')
     REDIS_CONFIG = {
         'CACHE_TYPE': 'redis',
