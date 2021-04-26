@@ -2,7 +2,7 @@ import logging
 from http import HTTPStatus
 
 from .base import Base
-from ..decorators import account_notification
+from ..decorators.notifications import account_notification
 from ..models import Account as AccountModel
 
 

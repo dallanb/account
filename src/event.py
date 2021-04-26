@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from .events import *
 
@@ -11,5 +12,5 @@ def new_event_listener(event):
         try:
             Auth().handle_event(key=key, data=data)
         except Exception as ex:
-            logging.error(ex)
-            logging.info('Auth event err')
+            logging.error(traceback.format_exc())
+            logging.error('Auth event err')

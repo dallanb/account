@@ -1,6 +1,6 @@
 import logging
 from .base import Base
-from ..decorators import address_notification
+from ..decorators.notifications import address_notification
 from ..models import Address as AddressModel
 from http import HTTPStatus
 
