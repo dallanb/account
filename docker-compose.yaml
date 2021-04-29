@@ -6,7 +6,7 @@ services:
     image: adminer:latest
     restart: always
     ports:
-      - 9080:8080
+      - 8070:8080
     networks:
       - app-net
   account:
@@ -21,6 +21,7 @@ services:
       - ${HUNCHO_DIR}/services/account/tests:/home/app/tests
       - ${HUNCHO_DIR}/services/account/seeds:/home/app/seeds
       - ${HUNCHO_DIR}/services/account/src:/home/app/src
+      - ${HUNCHO_DIR}/services/account/logs:/home/app/logs
       - ${HUNCHO_DIR}/services/account/statics:/home/app/statics
       - ${HUNCHO_DIR}/services/account/manage.py:/home/app/manage.py
       - ${HUNCHO_DIR}/services/account/setup.py:/home/app/setup.py
